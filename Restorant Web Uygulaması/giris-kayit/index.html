@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restorant - Giriş Yap</title>
+    <link rel="stylesheet" href="/deneme/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="shortcut icon" href="/fotolar/asd.jpg">
+</head>
+
+<body class="login-page">
+<div class="wrapper">
+    <form action="/login" method="POST" id="login-form">
+        <h1>Giriş Yap</h1> 
+        
+        <div class="input-box">
+            <input type="text" placeholder="E-Posta veya Telefon" name="identifier" required autocapitalize="off" style="text-transform: lowercase;">
+            <i class="fa-solid fa-user"></i> </div>
+
+        <div class="input-box">
+            <input type="password" placeholder="Şifre" name="password" required>
+            <i class="fa-solid fa-lock"></i>
+        </div>
+        
+        <div id="message-container"></div>
+
+        <div class="remember-forgot">
+            <label><input type="checkbox" name="remember" value="on"> Beni Hatırla</label>
+            <a href="#">Şifrenimi Unuttun?</a>
+        </div>
+
+        <button type="submit" class="btn">Giriş Yap</button>
+
+        <div class="register-link">
+            <p>Hesabın Yokmu?</p> 
+            <a href="/giris-kayit/register.html">Kayıt Ol</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    const loginForm = document.getElementById('login-form');
+    const messageContainer = document.getElementById('message-container');
+
+    loginForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(loginForm);
+
+        messageContainer.textContent = 'Giriş yapılıyor...';
+        messageContainer.className = 'message-loading';
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                messageContainer.textContent = data.message;
+                messageContainer.className = 'message-success';
+                setTimeout(() => {
+                    window.location.href = data.redirectUrl;
+                }, 1500);
+            } else {
+                messageContainer.textContent = data.message;
+                messageContainer.className = 'message-error';
+            }
+        } catch (error) {
+            messageContainer.textContent = 'Ağ hatası oluştu. Tekrar deneyin.';
+            messageContainer.className = 'message-error';
+        }
+    });
+
+// --- FAVICON YÜKLEME ---
+// Bu kod sayfa açılınca veritabanından faviconu çeker ve tarayıcı sekmesine koyar.
+fetch('/api/admin/settings')
+    .then(res => res.json())
+    .then(data => {
+        if (data.success && data.settings && data.settings.site_favicon) {
+            let link = document.querySelector("link[rel~='icon']");
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'icon';
+                document.getElementsByTagName('head')[0].appendChild(link);
+            }
+            link.href = data.settings.site_favicon;
+        }
+    })
+    .catch(err => console.error("Favicon yüklenemedi", err));
+
+</script>
+
+</body>
+</html>

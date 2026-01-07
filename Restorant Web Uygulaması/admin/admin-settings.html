@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Ayarları | Admin</title>
+    <link rel="stylesheet" href="/deneme/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .settings-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .settings-card {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .settings-card h3 {
+            border-bottom: 1px solid #444;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+            font-weight: 500;
+            font-size: 1.3rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: #252525;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .save-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+        .save-btn:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .preview-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #444;
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+            .settings-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="admin-page">
+
+    <div class="sidebar">
+        <div class="sidebar-brand"><span class="fa-solid fa-utensils"></span>
+            <h2>Admin</h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li><a href="/admin/adminpanel.html"><span class="fa-solid fa-gauge-high"></span> <span>Panel</span></a>
+                </li>
+                <li><a href="/admin/admin-orders.html"><span class="fa-solid fa-bag-shopping"></span>
+                        <span>Siparişler</span></a></li>
+                <li><a href="/admin/admin-products.html"><span class="fa-solid fa-burger"></span>
+                        <span>Ürünler</span></a></li>
+                <li><a href="/admin/admin-reservations.html"><span class="fa-solid fa-calendar-days"></span>
+                        <span>Rezervasyonlar</span></a></li>
+                <li><a href="/admin/admin-customers.html"><span class="fa-solid fa-users"></span>
+                        <span>Müşteriler</span></a></li>
+                <li><a href="/admin/admin-messages.html"><span class="fa-solid fa-message"></span>
+                        <span>Mesajlar</span></a></li>
+                <li><a href="/admin/admin-logs.html"><span class="fa-solid fa-clipboard-list"></span> <span>İşlem
+                            Logları</span></a></li>
+                <li><a href="/admin/admin-settings.html" class="active"><span class="fa-solid fa-gear"></span>
+                        <span>Ayarlar</span></a></li>
+                <li><a href="/"><span class="fa-solid fa-house"></span> <span>Siteye Dön</span></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h2><i class="fa-solid fa-gear"></i> Site Ayarları</h2>
+            <div class="user-wrapper">
+                <img src="" id="admin-avatar" alt="Profil">
+                <div>
+                    <h4 id="admin-name">...</h4><small id="admin-role">...</small>
+                </div>
+            </div>
+        </header>
+
+        <form id="settings-form" onsubmit="saveSettings(event)">
+            <div class="settings-container">
+                <div class="settings-card">
+                    <h3><i class="fa-solid fa-circle-info"></i> Genel Bilgiler</h3>
+                    <div class="form-group">
+                        <label>Site Başlığı</label>
+                        <input type="text" name="site_title" id="site_title">
+
+                        <h4
+                            style="margin-top:20px; margin-bottom:15px; color:var(--primary); border-bottom:1px solid #444; padding-bottom:5px;">
+                            <i class="fa-solid fa-share-nodes"></i> Sosyal Medya Linkleri
+                        </h4>
+
+                        <div class="form-group">
+                            <label><i class="fa-brands fa-facebook" style="color:#3b5998;"></i> Facebook Linki</label>
+                            <input type="text" name="social_facebook" id="social_facebook"
+                                placeholder="https://facebook.com/sayfaniz">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-brands fa-twitter" style="color:#1da1f2;"></i> Twitter (X) Linki</label>
+                            <input type="text" name="social_twitter" id="social_twitter"
+                                placeholder="https://twitter.com/sayfaniz">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-brands fa-instagram" style="color:#e1306c;"></i> Instagram Linki</label>
+                            <input type="text" name="social_instagram" id="social_instagram"
+                                placeholder="https://instagram.com/sayfaniz">
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon</label>
+                        <input type="text" name="contact_phone" id="contact_phone">
+                    </div>
+                    <div class="form-group">
+                        <label>E-Posta</label>
+                        <input type="email" name="contact_email" id="contact_email">
+                    </div>
+                    <div class="form-group">
+                        <label>Adres</label>
+                        <textarea name="contact_address" id="contact_address" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Google Harita Embed Linki (src)</label>
+                        <input type="text" name="contact_map_url" id="contact_map_url"
+                            placeholder="https://www.google.com/maps/embed?pb=...">
+                        <small style="color:#aaa; font-size:0.9rem;">Google Haritalar -> Paylaş -> Harita Yerleştir ->
+                            src içindeki linki kopyalayın.</small>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3><i class="fa-solid fa-pen-nib"></i> Hakkımızda Bölümü</h3>
+                    <div class="form-group">
+                        <label>Başlık</label>
+                        <input type="text" name="about_title" id="about_title"
+                            placeholder="Örn: Burgerlerimizin Sırrı...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Açıklama Yazısı</label>
+                        <textarea name="about_text" id="about_text" rows="4"
+                            placeholder="Hakkımızda yazısı..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Görsel</label>
+                        <input type="file" name="about_image" accept="image/*"
+                            onchange="previewImage(this, 'about-preview')">
+                        <img id="about-preview" class="preview-img">
+                    </div>
+                </div>
+                <div class="settings-card" style="grid-column: span 2;">
+                    <h3><i class="fa-solid fa-comments"></i> Müşteri Yorumları</h3>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                        <div style="background: #333; padding: 15px; border-radius: 8px;">
+                            <h4 style="color:var(--primary); margin-bottom:10px;">1. Yorum</h4>
+                            <div class="form-group">
+                                <label>Müşteri Adı</label>
+                                <input type="text" name="rev_1_name" id="rev_1_name" placeholder="Örn: Ahmet Yılmaz">
+                            </div>
+                            <div class="form-group">
+                                <label>Yorum</label>
+                                <textarea name="rev_1_text" id="rev_1_text" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Fotoğraf</label>
+                                <input type="file" name="rev_1_img" accept="image/*"
+                                    onchange="previewImage(this, 'prev_1')">
+                                <img id="prev_1" class="preview-img"
+                                    style="height: 80px; width: 80px; border-radius: 50%;">
+                            </div>
+                        </div>
+
+                        <div style="background: #333; padding: 15px; border-radius: 8px;">
+                            <h4 style="color:var(--primary); margin-bottom:10px;">2. Yorum</h4>
+                            <div class="form-group">
+                                <label>Müşteri Adı</label>
+                                <input type="text" name="rev_2_name" id="rev_2_name">
+                            </div>
+                            <div class="form-group">
+                                <label>Yorum</label>
+                                <textarea name="rev_2_text" id="rev_2_text" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Fotoğraf</label>
+                                <input type="file" name="rev_2_img" accept="image/*"
+                                    onchange="previewImage(this, 'prev_2')">
+                                <img id="prev_2" class="preview-img"
+                                    style="height: 80px; width: 80px; border-radius: 50%;">
+                            </div>
+                        </div>
+
+                        <div style="background: #333; padding: 15px; border-radius: 8px;">
+                            <h4 style="color:var(--primary); margin-bottom:10px;">3. Yorum</h4>
+                            <div class="form-group">
+                                <label>Müşteri Adı</label>
+                                <input type="text" name="rev_3_name" id="rev_3_name">
+                            </div>
+                            <div class="form-group">
+                                <label>Yorum</label>
+                                <textarea name="rev_3_text" id="rev_3_text" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Fotoğraf</label>
+                                <input type="file" name="rev_3_img" accept="image/*"
+                                    onchange="previewImage(this, 'prev_3')">
+                                <img id="prev_3" class="preview-img"
+                                    style="height: 80px; width: 80px; border-radius: 50%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-card">
+                    <h3><i class="fa-solid fa-image"></i> Site Logosu / Favicon</h3>
+                    <div class="form-group">
+                        <label>Favicon (Sekme İkonu)</label>
+                        <input type="file" name="favicon" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>Dükkan Durumu</label>
+                        <select name="shop_is_open" id="shop_is_open"
+                            style="padding:10px; background:#333; color:white; border:1px solid #555;">
+                            <option value="true">AÇIK (Sipariş Alınıyor)</option>
+                            <option value="false">KAPALI (Sipariş Durduruldu)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="save-btn"><i class="fa-solid fa-floppy-disk"></i> Ayarları Kaydet</button>
+        </form>
+    </div>
+
+    <script src="/deneme/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => { loadSettings(); updateAdminProfile(); });
+
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/admin/settings');
+                const data = await res.json();
+                if (data.success && data.settings) {
+                    const s = data.settings;
+                    if (s.site_title) document.getElementById('site_title').value = s.site_title;
+                    if (s.contact_phone) document.getElementById('contact_phone').value = s.contact_phone;
+                    if (s.contact_email) document.getElementById('contact_email').value = s.contact_email;
+                    if (s.contact_address) document.getElementById('contact_address').value = s.contact_address;
+                    if (s.shop_is_open) document.getElementById('shop_is_open').value = s.shop_is_open;
+                    // loadSettings fonksiyonunun içine ekle:
+                    if (s.contact_map_url) document.getElementById('contact_map_url').value = s.contact_map_url;
+                    // ... loadSettings fonksiyonunun içine, diğer if'lerin altına ekle ...
+
+                    if (s.social_facebook) document.getElementById('social_facebook').value = s.social_facebook;
+                    if (s.social_twitter) document.getElementById('social_twitter').value = s.social_twitter;
+                    if (s.social_instagram) document.getElementById('social_instagram').value = s.social_instagram;
+
+
+                    // Yorum 1 Verileri
+                    if (s.rev_1_name) document.getElementById('rev_1_name').value = s.rev_1_name;
+                    if (s.rev_1_text) document.getElementById('rev_1_text').value = s.rev_1_text;
+                    if (s.rev_1_img) { document.getElementById('prev_1').src = s.rev_1_img; document.getElementById('prev_1').style.display = 'block'; }
+
+                    // Yorum 2 Verileri
+                    if (s.rev_2_name) document.getElementById('rev_2_name').value = s.rev_2_name;
+                    if (s.rev_2_text) document.getElementById('rev_2_text').value = s.rev_2_text;
+                    if (s.rev_2_img) { document.getElementById('prev_2').src = s.rev_2_img; document.getElementById('prev_2').style.display = 'block'; }
+
+                    // Yorum 3 Verileri
+                    if (s.rev_3_name) document.getElementById('rev_3_name').value = s.rev_3_name;
+                    if (s.rev_3_text) document.getElementById('rev_3_text').value = s.rev_3_text;
+                    if (s.rev_3_img) { document.getElementById('prev_3').src = s.rev_3_img; document.getElementById('prev_3').style.display = 'block'; }
+                    // Hakkımızda
+                    if (s.about_title) document.getElementById('about_title').value = s.about_title;
+                    if (s.about_text) document.getElementById('about_text').value = s.about_text;
+                    if (s.about_image) {
+                        const img = document.getElementById('about-preview');
+                        img.src = s.about_image; img.style.display = 'block';
+                    }
+                }
+            } catch (e) { }
+        }
+
+        async function saveSettings(e) {
+            e.preventDefault();
+            const btn = document.querySelector('.save-btn');
+            btn.innerHTML = 'Kaydediliyor...'; btn.disabled = true;
+            const formData = new FormData(document.getElementById('settings-form'));
+
+            try {
+                const res = await fetch('/api/admin/update-settings', { method: 'POST', body: formData });
+                const result = await res.json();
+                if (result.success) alert('Ayarlar güncellendi!'); else alert('Hata oluştu.');
+            } catch (err) { alert('Sunucu hatası.'); }
+            finally { btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Ayarları Kaydet'; btn.disabled = false; }
+        }
+
+        function previewImage(input, imgId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.getElementById(imgId);
+                    img.src = e.target.result; img.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function updateAdminProfile() {
+            try {
+                const res = await fetch('/api/check-auth');
+                const data = await res.json();
+                if (data.success && data.user) {
+                    document.getElementById('admin-name').innerText = data.user.name;
+                    document.getElementById('admin-role').innerText = data.user.email;
+                    document.getElementById('admin-avatar').src = `https://ui-avatars.com/api/?name=${data.user.name}&background=random&color=fff`;
+                }
+            } catch (err) { }
+        }
+    </script>
+</body>
+
+</html>

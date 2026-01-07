@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İşlem Kayıtları (Loglar) | Admin</title>
+    <link rel="stylesheet" href="/deneme/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Log Tablosuna Özel Ufak Dokunuşlar */
+        .log-type {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .type-danger {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .type-warning {
+            background: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+        }
+
+        .type-info {
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+        }
+
+        .type-success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .log-date {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .log-admin {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .log-admin img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body class="admin-page">
+
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <span class="fa-solid fa-utensils"></span>
+            <h2>Admin</h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li><a href="/admin/adminpanel.html"><span class="fa-solid fa-gauge-high"></span> <span>Panel</span></a>
+                </li>
+                <li><a href="/admin/admin-orders.html"><span class="fa-solid fa-bag-shopping"></span>
+                        <span>Siparişler</span></a></li>
+                <li><a href="/admin/admin-products.html"><span class="fa-solid fa-burger"></span>
+                        <span>Ürünler</span></a></li>
+                <li><a href="/admin/admin-reservations.html"><span class="fa-solid fa-calendar-days"></span>
+                        <span>Rezervasyonlar</span></a></li>
+                <li><a href="/admin/admin-customers.html"><span class="fa-solid fa-users"></span>
+                        <span>Müşteriler</span></a></li>
+                <li><a href="/admin/admin-messages.html"><span class="fa-solid fa-message"></span>
+                        <span>Mesajlar</span></a></li>
+                <li><a href="/admin/admin-logs.html" class="active"><span class="fa-solid fa-clipboard-list"></span>
+                        <span>İşlem Logları</span></a></li>
+                <li><a href="/admin/admin-settings.html"><span class="fa-solid fa-gear"></span> <span>Ayarlar</span></a>
+                </li>
+                <li><a href="/"><span class="fa-solid fa-house"></span> <span>Siteye Dön</span></a></li>
+            </ul>
+        </div>
+        <div class="logout-container">
+            <div class="logout-btn" onclick="window.location.href='/logout'">
+                <i class="fa-solid fa-power-off"></i> <span>Çıkış Yap</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h2><i class="fa-solid fa-clipboard-list"></i> Yönetici İşlem Kayıtları</h2>
+            <div class="user-wrapper">
+                <img src="" id="admin-avatar" alt="Profil">
+                <div>
+                    <h4 id="admin-name">...</h4><small id="admin-role">...</small>
+                </div>
+            </div>
+        </header>
+
+        <div class="recent-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Son İşlemler</h3>
+                    <button onclick="fetchLogs()"><i class="fa-solid fa-rotate"></i> Yenile</button>
+                </div>
+                <div class="card-body">
+                    <table width="100%">
+                        <thead>
+                            <tr>
+                                <th>Yönetici</th>
+                                <th>İşlem Tipi</th>
+                                <th>Detay</th>
+                                <th>IP Adresi</th>
+                                <th>Tarih</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-table-body">
+                            <tr>
+                                <td colspan="5" style="text-align:center;">Kayıtlar yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchLogs();
+            updateAdminProfile();
+        });
+
+        async function fetchLogs() {
+            try {
+                const res = await fetch('/api/admin/logs');
+                const data = await res.json();
+                const tbody = document.getElementById('logs-table-body');
+
+                if (data.success && data.logs.length > 0) {
+                    tbody.innerHTML = '';
+                    data.logs.forEach(log => {
+                        // Tarih Formatı
+                        const date = new Date(log.created_at).toLocaleString('tr-TR');
+
+                        // İsim Formatı
+                        const adminName = log.name ? `${log.name} ${log.surname}` : 'Bilinmiyor';
+                        const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=random&color=fff&size=30`;
+
+                        // Renklendirme
+                        let typeClass = 'type-info';
+                        if (log.action_type.includes('Sil')) typeClass = 'type-danger';
+                        if (log.action_type.includes('Güncelle') || log.action_type.includes('Yetki')) typeClass = 'type-warning';
+                        if (log.action_type.includes('Ekle')) typeClass = 'type-success';
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>
+                                    <div class="log-admin">
+                                        <img src="${avatarUrl}" alt="Avatar">
+                                        <div>
+                                            <div style="font-weight:bold; color:#fff;">${adminName}</div>
+                                            <div style="font-size:0.8rem; color:#aaa;">${log.email || ''}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="log-type ${typeClass}">${log.action_type}</span></td>
+                                <td style="color:#ddd;">${log.description}</td>
+                                <td style="color:#888;">${log.ip_address || '-'}</td>
+                                <td class="log-date">${date}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Henüz kayıt bulunmamaktadır.</td></tr>';
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // --- FAVICON YÜKLEME ---
+        fetch('/api/admin/settings')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.settings && data.settings.site_favicon) {
+                    let link = document.querySelector("link[rel~='icon']");
+                    if (!link) {
+                        link = document.createElement('link');
+                        link.rel = 'icon';
+                        document.getElementsByTagName('head')[0].appendChild(link);
+                    }
+                    link.href = data.settings.site_favicon;
+                }
+            })
+            .catch(err => console.error("Favicon yüklenemedi", err));
+
+        async function updateAdminProfile() {
+            const imgEl = document.getElementById('admin-avatar'); const nameEl = document.getElementById('admin-name'); const roleEl = document.getElementById('admin-role');
+            if (!imgEl || !nameEl) return;
+            try {
+                const res = await fetch('/api/check-auth'); const data = await res.json();
+                if (data.success && data.user) {
+                    const u = data.user; const fullName = (u.name && u.surname) ? `${u.name} ${u.surname}` : u.username;
+                    nameEl.innerText = fullName; roleEl.innerText = u.email;
+                    imgEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=random&color=fff&bold=true&size=128`;
+                }
+            } catch (err) { }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restorant - Kayıt Ol</title>
+    <link rel="stylesheet" href="/deneme/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="shortcut icon" href="/fotolar/asd.jpg">
+</head>
+
+<body class="login-page">
+
+<div class="wrapper">
+    <form action="/register" method="POST" id="register-form">
+        <h1>Kayıt Ol</h1>
+        
+        <div class="input-box">
+            <input type="text" placeholder="Adınız" name="name" required>
+            <i class="fa-solid fa-user-pen"></i>
+        </div>
+        <div class="input-box">
+            <input type="text" placeholder="Soyadınız" name="surname" required>
+            <i class="fa-solid fa-user-pen"></i>
+        </div>
+
+        <div class="input-box">
+            <input type="tel" placeholder="Telefon Numarası" name="phone" required>
+            <i class="fa-solid fa-phone"></i>
+        </div>
+
+        <div class="input-box">
+            <input type="email" placeholder="E-Posta" name="email" required autocapitalize="off" style="text-transform: lowercase;">
+            <i class="fa-solid fa-envelope"></i>
+        </div>
+
+        <div class="input-box">
+            <input type="password" placeholder="Şifreni Oluştur" name="password" required>
+            <i class="fa-solid fa-lock"></i>
+        </div>
+        <div class="input-box">
+            <input type="password" placeholder="Şifreni Tekrar Gir" name="password_confirm" required>
+            <i class="fa-solid fa-repeat"></i>
+        </div>
+        
+        <div id="message-container"></div>
+        
+        <button type="submit" class="btn">Kayıt Ol</button>
+        
+        <div class="register-link">
+            <p>Zaten Hesabın Varmı Giriş Yap?</p> 
+            <a href="/giris-kayit/index.html">Giriş Yap</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    const registerForm = document.getElementById('register-form');
+    const messageContainer = document.getElementById('message-container');
+
+    registerForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(registerForm);
+        const password = formData.get('password');
+        const password_confirm = formData.get('password_confirm');
+
+        if (password !== password_confirm) {
+            messageContainer.textContent = 'Şifreler uyuşmuyor!';
+            messageContainer.className = 'message-error';
+            return;
+        }
+
+        messageContainer.textContent = 'Kayıt oluşturuluyor...';
+        messageContainer.className = 'message-loading';
+
+        try {
+            const response = await fetch('/register', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                messageContainer.textContent = data.message;
+                messageContainer.className = 'message-success';
+                setTimeout(() => {
+                    window.location.href = data.redirectUrl;
+                }, 1500);
+            } else {
+                messageContainer.textContent = data.message;
+                messageContainer.className = 'message-error';
+            }
+        } catch (error) {
+            messageContainer.textContent = 'Ağ hatası oluştu. Tekrar deneyin.';
+            messageContainer.className = 'message-error';
+        }
+    });
+
+// --- FAVICON YÜKLEME ---
+fetch('/api/admin/settings')
+    .then(res => res.json())
+    .then(data => {
+        if (data.success && data.settings && data.settings.site_favicon) {
+            let link = document.querySelector("link[rel~='icon']");
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'icon';
+                document.getElementsByTagName('head')[0].appendChild(link);
+            }
+            link.href = data.settings.site_favicon;
+        }
+    })
+    .catch(err => console.error("Favicon yüklenemedi", err));
+
+</script>
+</body>
+</html>

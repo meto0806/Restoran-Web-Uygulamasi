@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restorant</title>
+    <link rel="stylesheet" href="/deneme/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <a href="#" class="logo"><img src="/fotolar/logo.png" alt="logo"></a>
+        <nav class="navbar">
+            <span id="welcome-message-container"></span>
+
+            <a href="#">Ana Sayfa</a>
+            
+            <a href="#about">Hakkımızda</a>
+
+            <a href="/sistemler/menu.html">Menü</a>
+
+            <a href="#review">Yorumlar</a>
+
+            <a href="#contact">İletişim</a>
+
+            <a href="#" onclick="rezervasyonModalAc(); return false;">Rezervasyon</a>
+        </nav>
+        
+        <div class="buttons">
+            
+            <button id="cart-btn" style="position: relative;">
+                <i class="fa-solid fa-shopping-cart"></i>
+                <span id="cart-count"
+                    style="position: absolute; top: -8px; right: -8px; background-color: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 1rem; font-weight: bold;">0</span>
+            </button>
+            <a href="/giris-kayit/index.html" id="user-auth-link"><i class="fa-solid fa-user"></i></a>
+            
+        </div>
+    </header>
+
+    <section class="home">
+        <div class="content">
+            <h3>Hızlı Teslimat</h3>
+            <P>Lezzetli pizzalar ve enfes menüler kapınızda.</P>
+            <a href="/sistemler/menu.html" class="btn">Sipariş Ver</a>
+        </div>
+    </section>
+
+    <div class="site-main-background">
+
+        <section class="menu">
+            <h1 class="heading products-heading"><span>menü</span></h1>
+            <div class="box-container" id="menu-container-dynamic">
+                <p style="text-align:center; color:#fff; width:100%; font-size:1.5rem;">Yükleniyor...</p>
+            </div>
+        </section>
+
+        <section class="products">
+            <h1 class="heading products-heading"><span>Ürünlerimiz</span></h1>
+            <div class="box-container" id="products-container-dynamic">
+                <p style="text-align:center; color:#fff; width:100%; font-size:1.5rem;">Yükleniyor...</p>
+            </div>
+        </section>
+
+        <section class="about" id="about">
+            <h1 class="heading about-heading">Hakkımızda</h1>
+            <div class="row">
+                <div class="image">
+                    <img id="about-img-display" src="/fotolar/default.png" alt="Hakkımızda"
+                        onerror="this.src='/fotolar/default.png'">
+                </div>
+                <div class="content">
+                    <h3 id="about-title-display">Yükleniyor...</h3>
+                    <p id="about-text-display">...</p>
+                    <a href="/sistemler/menu.html" class="btn">Menüyü İncele</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="review" id="review">
+            <h1 class="heading review-heading">Müşteri <span>Yorumları</span></h1>
+
+            <div class="box-container">
+                <div class="box">
+                    <i class="fas fa-quote-right quote"></i>
+                    <p id="disp-rev-1-text">Yükleniyor...</p>
+                    <img id="disp-rev-1-img" src="/fotolar/default.png" alt="musteri" class="user">
+                    <h3 id="disp-rev-1-name">Müşteri 1</h3>
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <i class="fas fa-quote-right quote"></i>
+                    <p id="disp-rev-2-text">Yükleniyor...</p>
+                    <img id="disp-rev-2-img" src="/fotolar/default.png" alt="musteri" class="user">
+                    <h3 id="disp-rev-2-name">Müşteri 2</h3>
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <i class="fas fa-quote-right quote"></i>
+                    <p id="disp-rev-3-text">Yükleniyor...</p>
+                    <img id="disp-rev-3-img" src="/fotolar/default.png" alt="musteri" class="user">
+                    <h3 id="disp-rev-3-name">Müşteri 3</h3>
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact" id="contact">
+            <h1 class="heading contact-heading">İletişime <span>geçin</span></h1>
+            <div class="row">
+                <iframe class="map"
+                    src=""
+                    allowfullscreen="" loading="lazy"></iframe>
+
+                <form onsubmit="sendMessage(event)">
+                    <h3>Bize Ulaşın</h3>
+                    <div class="inputBox">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="contact-name" placeholder="İsim Soyisim" required>
+                    </div>
+                    <div class="inputBox">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="contact-email" placeholder="E-Posta" required>
+                    </div>
+                    <div class="inputBox">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="contact-phone" placeholder="Telefon"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    </div>
+                    <div class="inputBox">
+                        <i class="fas fa-tag"></i>
+                        <input type="text" id="contact-subject" placeholder="Konu" required>
+                    </div>
+                    <div class="inputBox">
+                        <textarea id="contact-message" placeholder="Mesajınız..." cols="30" rows="5"
+                            style="width:100%; background:transparent; color:#fff; font-size:1.6rem; resize:none; border:none; outline:none; padding:10px;"
+                            required></textarea>
+                    </div>
+
+                    <input type="submit" value="Mesajı Gönder" class="btn">
+                </form>
+            </div>
+        </section>
+
+        <section class="footer">
+            <div class="share">
+                <a href="#" class="fab fa-facebook-f" id="footer-facebook" target="_blank"></a>
+                <a href="#" class="fab fa-twitter" id="footer-twitter" target="_blank"></a>
+                <a href="#" class="fab fa-instagram" id="footer-instagram" target="_blank"></a>
+            </div>
+
+            <div class="links">
+                <a href="#">Ana Sayfa</a>
+                <a href="#about">Hakkımızda</a>
+                <a href="/sistemler/menu.html">Menü</a>
+                <a href="#review">Yorumlar</a>
+                <a href="#contact">İletişim</a>
+                <a href="#" onclick="rezervasyonModalAc(); return false;">Rezervasyon</a>
+            </div>
+
+            <div class="footer-contact" style="text-align:center; margin: 2rem 0;">
+                <h3 style="color:var(--primary); font-size: 2rem; margin-bottom: 1rem;">İletişim</h3>
+                <p style="color:#fff; font-size: 1.4rem; padding: 0.5rem;">
+                    <i class="fa-solid fa-location-dot" style="color:var(--primary); margin-right:5px;"></i>
+                    <span id="footer-address">Adres Yükleniyor...</span>
+                </p>
+                <p style="color:#fff; font-size: 1.4rem; padding: 0.5rem;">
+                    <i class="fa-solid fa-phone" style="color:var(--primary); margin-right:5px;"></i>
+                    <span id="footer-phone">Telefon Yükleniyor...</span>
+                </p>
+                <p style="color:#fff; font-size: 1.4rem; padding: 0.5rem;">
+                    <i class="fa-solid fa-envelope" style="color:var(--primary); margin-right:5px;"></i>
+                    <span id="footer-email">Email Yükleniyor...</span>
+                </p>
+            </div>
+
+            <div class="credit">© 2025 Tüm Hakları Saklıdır | <span id="footer-site-title">Restorant</span></div>
+        </section>
+
+    </div>
+
+    <div id="sepet-modal-overlay" class="sepet-modal-overlay">
+        <div id="sepet-modal" class="sepet-modal">
+            <button id="sepet-kapat-btn" class="sepet-kapat-btn">×</button>
+            <h2>Sepetim</h2>
+            <div id="sepet-urunler-listesi">
+                <p>Sepetiniz şu an boş.</p>
+            </div>
+            <div class="sepet-toplam">Toplam: <span id="sepet-toplam-fiyat">0.00 TL</span></div>
+            <button class="btn" onclick="window.location.href='/sistemler/menu.html'" style="width:100%">Siparişi Tamamla</button>
+        </div>
+    </div>
+
+    <div id="custom-alert-overlay" class="sepet-modal-overlay">
+        <div class="custom-alert-box">
+            <div id="alert-icon-container"></div>
+            <h3 id="alert-title">Başlık</h3>
+            <p id="alert-message">Mesaj buraya gelecek.</p>
+            <div id="alert-buttons" class="alert-actions">
+            </div>
+        </div>
+    </div>
+
+    <a href="javascript:void(0)" onclick="rezervasyonModalAc()" class="floating-rez-btn">
+        <div class="icon-box">
+            <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <span class="text">Rezervasyon Yap</span>
+    </a>
+
+    <div id="rezervasyon-modal-overlay" class="sepet-modal-overlay">
+        <div class="sepet-modal" style="max-width: 500px;">
+            <button class="sepet-kapat-btn" onclick="rezervasyonModalKapat()">×</button>
+            <h2 style="color: #e74c3c;">Masa Rezervasyonu</h2>
+            <p style="text-align:center; color:#666; margin-bottom:20px;">Lezzet dolu bir deneyim için yerinizi ayırtın.</p>
+
+            <form id="reservation-form" onsubmit="rezervasyonYap(event)">
+                <div class="inputBox" style="margin-bottom:15px; border:1px solid #ddd; padding:10px; border-radius:10px; display:flex; align-items:center;">
+                    <i class="fa-solid fa-user" style="color:#e74c3c; margin-right:10px; font-size:1.6rem;"></i>
+                    <input type="text" id="rez-name" placeholder="Adınız Soyadınız" required style="border:none; width:100%; font-size:1.5rem; outline:none;">
+                </div>
+
+                <div class="inputBox" style="margin-bottom:15px; border:1px solid #ddd; padding:10px; border-radius:10px; display:flex; align-items:center;">
+                    <i class="fa-solid fa-phone" style="color:#e74c3c; margin-right:10px; font-size:1.6rem;"></i>
+                    <input type="tel" id="rez-phone" placeholder="Telefon Numaranız" required style="border:none; width:100%; font-size:1.5rem; outline:none;">
+                </div>
+
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <div class="inputBox" style="flex:1; border:1px solid #ddd; padding:10px; border-radius:10px;">
+                        <label style="font-size:1.2rem; color:#888;">Tarih</label>
+                        <input type="date" id="rez-date" required style="border:none; width:100%; font-size:1.4rem; outline:none;">
+                    </div>
+                    <div class="inputBox" style="flex:1; border:1px solid #ddd; padding:10px; border-radius:10px;">
+                        <label style="font-size:1.2rem; color:#888;">Saat</label>
+                        <input type="time" id="rez-time" required style="border:none; width:100%; font-size:1.4rem; outline:none;">
+                    </div>
+                </div>
+
+                <div class="inputBox" style="margin-bottom:15px; border:1px solid #ddd; padding:10px; border-radius:10px; display:flex; align-items:center;">
+                    <i class="fa-solid fa-users" style="color:#e74c3c; margin-right:10px; font-size:1.6rem;"></i>
+                    <select id="rez-guests" style="border:none; width:100%; font-size:1.5rem; outline:none; background:transparent;">
+                        <option value="1">1 Kişi</option>
+                        <option value="2" selected>2 Kişi</option>
+                        <option value="3">3 Kişi</option>
+                        <option value="4">4 Kişi</option>
+                        <option value="5">5 Kişi</option>
+                        <option value="6">6 Kişi</option>
+                        <option value="kalabalik">7+ (Kalabalık Grup)</option>
+                    </select>
+                </div>
+
+                <div class="inputBox" style="margin-bottom:20px; border:1px solid #ddd; padding:10px; border-radius:10px;">
+                    <textarea id="rez-notes" rows="2" placeholder="Özel bir isteğiniz var mı? (Opsiyonel)" style="border:none; width:100%; font-size:1.4rem; outline:none; resize:none; font-family:'Poppins', sans-serif;"></textarea>
+                </div>
+
+                <button type="submit" class="btn" style="width:100%; background-color:#e74c3c; border:none;">Rezervasyonu Tamamla</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let sepet = JSON.parse(localStorage.getItem('sepet')) || [];
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            setupCartModal();
+            sepetArayuzunuGuncelle();
+            loadHomeContent();
+            checkShopAndSettings();
+        });
+
+        // --- İÇERİK YÜKLEME ---
+        async function loadHomeContent() {
+            try {
+                // 1. Ürünleri Çek
+                const resProd = await fetch('/api/menu-products');
+                const dataProd = await resProd.json();
+                if (dataProd.success) {
+                    const menuCont = document.getElementById('menu-container-dynamic');
+                    const prodCont = document.getElementById('products-container-dynamic');
+                    if (menuCont) menuCont.innerHTML = '';
+                    if (prodCont) prodCont.innerHTML = '';
+
+                    dataProd.products.forEach(p => {
+                        const img = p.image_url || '/fotolar/default.png';
+                        // Ürün adındaki tek tırnakları escape et (örn: Chef's Pizza)
+                        const safeName = p.name.replace(/'/g, "\\'"); 
+                        
+                        // MENÜ KISMI (Sepete Ekle Butonu ile)
+                        if (p.home_section === 'menu' && menuCont) {
+                            menuCont.innerHTML += `
+                            <div class="box">
+                                <div class="box-image"><img src="${img}" alt="${safeName}"></div>
+                                <div class="box-content">
+                                    <span class="menu-category">${p.category_name || 'Lezzet'}</span>
+                                    <h3>${p.name}</h3>
+                                    <div class="price">${p.price}₺</div>
+                                    <a href="#" class="btn" onclick="addToCart(this, '${safeName}', '${p.price}'); return false;">Sepete Ekle</a>
+                                </div>
+                            </div>`;
+                        } 
+                        // ÜRÜNLER KISMI (+ Butonu ile)
+                        else if (p.home_section === 'product' && prodCont) {
+                            prodCont.innerHTML += `
+                            <div class="box">
+                                <div class="box-header"><span class="category">${p.category_name || 'ÜRÜN'}</span><h3 class="name">${p.name}</h3></div>
+                                <div class="box-img"><img src="${img}" alt="${safeName}"></div>
+                                <div class="box-footer">
+                                    <div class="price-info"><span class="price">${p.price}₺</span></div>
+                                    <button class="add-btn" onclick="addToCart(this, '${safeName}', '${p.price}');"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                            </div>`;
+                        }
+                    });
+                }
+
+                // 2. Ayarlar (Footer ve Diğerleri)
+                const resSet = await fetch('/api/public/settings');
+                const dataSet = await resSet.json();
+                if (dataSet.success) {
+                    const s = dataSet.settings;
+                    if (s.about_title) document.getElementById('about-title-display').innerText = s.about_title;
+                    if (s.about_text) document.getElementById('about-text-display').innerText = s.about_text;
+                    if (s.about_image) document.getElementById('about-img-display').src = s.about_image;
+                    if (s.contact_map_url) {
+                        const mapIframe = document.querySelector('.contact .row .map');
+                        if (mapIframe) {
+                            let cleanUrl = s.contact_map_url.trim();
+                            if (cleanUrl.startsWith('<iframe')) {
+                                const match = cleanUrl.match(/src=["'](.*?)["']/);
+                                if (match && match[1]) cleanUrl = match[1];
+                            }
+                            mapIframe.src = cleanUrl;
+                        }
+                    }
+
+                    // Yorumlar
+                    if (s.rev_1_name) document.getElementById('disp-rev-1-name').innerText = s.rev_1_name;
+                    if (s.rev_1_text) document.getElementById('disp-rev-1-text').innerText = s.rev_1_text;
+                    if (s.rev_1_img) document.getElementById('disp-rev-1-img').src = s.rev_1_img;
+                    if (s.rev_2_name) document.getElementById('disp-rev-2-name').innerText = s.rev_2_name;
+                    if (s.rev_2_text) document.getElementById('disp-rev-2-text').innerText = s.rev_2_text;
+                    if (s.rev_2_img) document.getElementById('disp-rev-2-img').src = s.rev_2_img;
+                    if (s.rev_3_name) document.getElementById('disp-rev-3-name').innerText = s.rev_3_name;
+                    if (s.rev_3_text) document.getElementById('disp-rev-3-text').innerText = s.rev_3_text;
+                    if (s.rev_3_img) document.getElementById('disp-rev-3-img').src = s.rev_3_img;
+
+                    // Footer
+                    if (s.site_title) document.getElementById('footer-site-title').innerText = s.site_title;
+                    if (s.contact_address) document.getElementById('footer-address').innerText = s.contact_address;
+                    if (s.contact_email) document.getElementById('footer-email').innerText = s.contact_email;
+                    if (s.contact_phone) document.getElementById('footer-phone').innerText = s.contact_phone;
+
+                    if (s.social_facebook) document.getElementById('footer-facebook').href = s.social_facebook;
+                    if (s.social_twitter) document.getElementById('footer-twitter').href = s.social_twitter;
+                    if (s.social_instagram) document.getElementById('footer-instagram').href = s.social_instagram;
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // --- SEPETE EKLEME FONKSİYONU ---
+        function addToCart(btnElement, name, price) {
+            // Önce ürünü sepete ekle
+            adetDegistir(name, 1, price);
+
+            // Sonra görsel geri bildirim ver
+            const originalContent = btnElement.innerHTML;
+            const isIconBtn = btnElement.querySelector('i') || btnElement.classList.contains('add-btn');
+
+            if (isIconBtn) {
+                btnElement.innerHTML = '<i class="fa-solid fa-check"></i>';
+            } else {
+                btnElement.innerText = 'Eklendi! ✔';
+            }
+            
+            // Rengi yeşil yap
+            const originalBg = btnElement.style.backgroundColor;
+            btnElement.style.backgroundColor = '#27ae60';
+            btnElement.style.color = '#fff';
+            btnElement.disabled = true;
+
+            // 1 saniye sonra eski haline getir
+            setTimeout(() => {
+                btnElement.innerHTML = originalContent;
+                btnElement.style.backgroundColor = originalBg;
+                btnElement.style.color = '';
+                btnElement.disabled = false;
+            }, 1000);
+        }
+
+        function adetDegistir(ad, degisim, fiyat) {
+            const mevcutUrun = sepet.find(urun => urun.ad === ad);
+            if (mevcutUrun) { mevcutUrun.adet += degisim; }
+            else if (degisim > 0 && fiyat) {
+                // Fiyat temizleme: '150.00' -> 150.00, '150₺' -> 150
+                let fiyatStr = fiyat.toString().replace('₺', '').replace(' TL', '');
+                let fiyatSayi = parseFloat(fiyatStr);
+                sepet.push({ ad: ad, fiyat: fiyatSayi, adet: 1 });
+            }
+            const guncelUrun = sepet.find(urun => urun.ad === ad);
+            if (guncelUrun && guncelUrun.adet <= 0) sepettenKompleCikar(ad);
+            else sepetArayuzunuGuncelle();
+        }
+
+        function sepettenKompleCikar(ad) {
+            sepet = sepet.filter(urun => urun.ad !== ad);
+            sepetArayuzunuGuncelle();
+        }
+
+        // --- SEPET GÜNCELLEME (BUTONLAR EKLENDİ) ---
+        function sepetArayuzunuGuncelle() {
+            let toplamUrun = 0; let toplamFiyat = 0;
+            const list = document.getElementById('sepet-urunler-listesi');
+            const totalEl = document.getElementById('sepet-toplam-fiyat');
+            const countEl = document.getElementById('cart-count');
+
+            if (list) {
+                list.innerHTML = '';
+                if (sepet.length === 0) list.innerHTML = '<p>Sepet boş.</p>';
+                else {
+                    sepet.forEach(u => {
+                        toplamUrun += u.adet; toplamFiyat += u.fiyat * u.adet;
+                        // --- GÜNCELLENEN KISIM: Silme ve Arttırma Butonları Eklendi ---
+                        list.innerHTML += `
+                            <div class="sepet-urun-item">
+                                <span class="urun-adi">${u.ad}</span>
+                                <div class="adet-kontrol">
+                                    <button class="adet-btn" onclick="adetDegistir('${u.ad}', -1)">-</button>
+                                    <span class="urun-adet">x ${u.adet}</span>
+                                    <button class="adet-btn" onclick="adetDegistir('${u.ad}', 1)">+</button>
+                                </div>
+                                <span class="urun-fiyat">${(u.fiyat * u.adet).toFixed(2)} TL</span>
+                                <button class="kaldir-btn" onclick="sepettenKompleCikar('${u.ad}')">&times;</button>
+                            </div>`;
+                    });
+                }
+            } else sepet.forEach(u => toplamUrun += u.adet);
+
+            if (countEl) countEl.innerText = toplamUrun;
+            if (totalEl) totalEl.innerText = toplamFiyat.toFixed(2) + " TL";
+            localStorage.setItem('sepet', JSON.stringify(sepet));
+        }
+
+        // --- SEPET MODAL ---
+        function setupCartModal() {
+            const modalOverlay = document.getElementById('sepet-modal-overlay');
+            const modalCloseBtn = document.getElementById('sepet-kapat-btn');
+            const headerCartBtn = document.getElementById('cart-btn');
+            if (headerCartBtn) headerCartBtn.addEventListener('click', () => modalOverlay?.classList.add('goster'));
+            if (modalCloseBtn) modalCloseBtn.addEventListener('click', () => modalOverlay?.classList.remove('goster'));
+            if (modalOverlay) modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('goster'); });
+        }
+
+        // --- KULLANICI KONTROLÜ ---
+        function checkAuth() {
+            const authLink = document.getElementById('user-auth-link');
+            const welcomeContainer = document.getElementById('welcome-message-container');
+            fetch('/api/check-auth').then(res => res.json()).then(data => {
+                if (data.success) {
+                    currentUser = data.user;
+                    if (authLink) authLink.href = '/sistemler/profil.html';
+                    if (welcomeContainer) welcomeContainer.innerHTML = `Hoş geldin, ${data.user.username}`;
+                } else { currentUser = null; }
+            });
+        }
+
+        // --- MODAL VE ALERT ---
+        const alertOverlay = document.getElementById('custom-alert-overlay');
+        const alertIcon = document.getElementById('alert-icon-container');
+        const alertTitle = document.getElementById('alert-title');
+        const alertMsg = document.getElementById('alert-message');
+        const alertBtns = document.getElementById('alert-buttons');
+
+        function closeAlert() { alertOverlay.classList.remove('goster'); }
+
+        function showCustomAlert(title, message, type = 'success') {
+            alertTitle.innerText = title; alertMsg.innerText = message;
+            alertBtns.innerHTML = `<button class="alert-btn btn-confirm" onclick="closeAlert()">Tamam</button>`;
+            if (type === 'success') alertIcon.innerHTML = '<i class="fa-solid fa-circle-check alert-icon icon-success"></i>';
+            else if (type === 'error') alertIcon.innerHTML = '<i class="fa-solid fa-circle-xmark alert-icon icon-error"></i>';
+            else alertIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation alert-icon icon-warning"></i>';
+            alertOverlay.classList.add('goster');
+        }
+
+        function showCustomConfirm(title, message, onConfirm) {
+            alertTitle.innerText = title; alertMsg.innerText = message;
+            alertIcon.innerHTML = '<i class="fa-solid fa-circle-question alert-icon icon-warning"></i>';
+            alertBtns.innerHTML = '';
+            const btnCancel = document.createElement('button'); btnCancel.className = 'alert-btn btn-cancel'; btnCancel.innerText = 'Vazgeç'; btnCancel.onclick = closeAlert;
+            const btnOk = document.createElement('button'); btnOk.className = 'alert-btn btn-confirm'; btnOk.innerText = 'Giriş Yap'; 
+            btnOk.onclick = () => { closeAlert(); if (onConfirm) onConfirm(); };
+            alertBtns.appendChild(btnCancel); alertBtns.appendChild(btnOk);
+            alertOverlay.classList.add('goster');
+        }
+
+        // --- REZERVASYON ---
+        function rezervasyonModalAc() {
+            if (!currentUser) {
+                showCustomConfirm("Giriş Gerekli", "Rezervasyon yapabilmek için lütfen giriş yapınız. Giriş sayfasına gitmek ister misiniz?", () => { window.location.href = '/giris-kayit/index.html'; });
+                return;
+            }
+            document.getElementById('rezervasyon-modal-overlay').classList.add('goster');
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('rez-date').min = today; 
+            document.getElementById('rez-date').value = today;
+            if (currentUser) {
+                document.getElementById('rez-name').value = `${currentUser.name || ''} ${currentUser.surname || ''}`.trim();
+                document.getElementById('rez-phone').value = currentUser.phone || '';
+            }
+        }
+        function rezervasyonModalKapat() { document.getElementById('rezervasyon-modal-overlay').classList.remove('goster'); }
+        async function rezervasyonYap(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText; btn.innerText = 'Gönderiliyor...'; btn.disabled = true;
+            const data = {
+                name: document.getElementById('rez-name').value, phone: document.getElementById('rez-phone').value,
+                date: document.getElementById('rez-date').value, time: document.getElementById('rez-time').value,
+                guests: document.getElementById('rez-guests').value, notes: document.getElementById('rez-notes').value
+            };
+            try {
+                const res = await fetch('/api/make-reservation', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                const result = await res.json();
+                if (result.success) {
+                    rezervasyonModalKapat();
+                    showCustomAlert("Harika!", "Rezervasyonunuz başarıyla alındı.", "success");
+                    document.getElementById('reservation-form').reset();
+                } else { showCustomAlert("Hata", "Bir sorun oluştu.", "error"); }
+            } catch (err) { showCustomAlert("Hata", "Sunucu hatası.", "error"); } 
+            finally { btn.innerText = originalText; btn.disabled = false; }
+        }
+
+        // --- İLETİŞİM ---
+        async function sendMessage(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('input[type="submit"]');
+            const originalVal = btn.value; btn.value = 'Gönderiliyor...'; btn.disabled = true;
+            const data = {
+                name: document.getElementById('contact-name').value, email: document.getElementById('contact-email').value,
+                phone: document.getElementById('contact-phone').value, subject: document.getElementById('contact-subject').value,
+                message: document.getElementById('contact-message').value
+            };
+            try {
+                const res = await fetch('/api/send-message', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                if ((await res.json()).success) { showCustomAlert('Teşekkürler', 'Mesajınız iletildi.', 'success'); e.target.reset(); } 
+                else { showCustomAlert('Hata', 'Mesaj gönderilemedi.', 'error'); }
+            } catch (err) { showCustomAlert('Hata', 'Sunucu hatası.', 'error'); } 
+            finally { btn.value = originalVal; btn.disabled = false; }
+        }
+
+        // --- AYARLAR & DÜKKAN DURUMU ---
+        async function checkShopAndSettings() {
+            try {
+                const res = await fetch('/api/shop-status');
+                if ((await res.json()).isOpen === false) {
+                    const banner = document.createElement('div');
+                    banner.innerHTML = '<i class="fa-solid fa-store-slash"></i> Şu an hizmet veremiyoruz (Dükkan Kapalı)';
+                    banner.style.cssText = "position:fixed; top:0; left:0; width:100%; background:#c0392b; color:white; text-align:center; padding:15px; font-size:1.2rem; z-index:9999; font-weight:bold; box-shadow: 0 2px 10px rgba(0,0,0,0.3);";
+                    document.body.prepend(banner);
+                    document.body.style.paddingTop = "50px"; 
+                }
+                const setRes = await fetch('/api/admin/settings');
+                const setData = await setRes.json();
+                if (setData.success && setData.settings?.site_favicon) {
+                    let link = document.querySelector("link[rel~='icon']");
+                    if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+                    link.href = setData.settings.site_favicon;
+                }
+            } catch(e) {}
+        }
+    </script>
+</body>
+</html>

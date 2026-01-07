@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Müşteriler | Admin</title>
+    <link rel="stylesheet" href="/deneme/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- GÜNCELLENMİŞ VE SORUNSUZ MODAL CSS --- */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            /* Daha koyu arka plan */
+            backdrop-filter: blur(4px);
+            z-index: 99999;
+            /* En üstte durması için yüksek değer */
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .custom-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .custom-modal-box {
+            background: #222;
+            /* Koyu gri zemin */
+            color: #fff;
+            padding: 40px 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .custom-modal-overlay.active .custom-modal-box {
+            transform: scale(1);
+        }
+
+        /* İkon Kutusu */
+        .modal-icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #555;
+        }
+
+        /* Temalar */
+        .theme-warning .modal-icon-wrapper {
+            color: #f39c12;
+            border-color: #f39c12;
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .theme-danger .modal-icon-wrapper {
+            color: #e74c3c;
+            border-color: #e74c3c;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .theme-success .modal-icon-wrapper {
+            color: #2ecc71;
+            border-color: #2ecc71;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .modal-desc {
+            font-size: 1.1rem;
+            color: #ccc;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        /* Butonlar */
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .modal-btn {
+            flex: 1;
+            /* Butonlar eşit genişlikte */
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            outline: none;
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn-cancel {
+            background: #444;
+            color: #fff;
+        }
+
+        .btn-cancel:hover {
+            background: #555;
+        }
+
+        /* Onay Butonları */
+        .btn-confirm {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        /* Varsayılan Kırmızı (Silme vb) */
+        .btn-confirm:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .btn-confirm.green-btn {
+            background: #2ecc71 !important;
+            color: #fff !important;
+        }
+
+        .btn-confirm.green-btn:hover {
+            background: #27ae60 !important;
+        }
+    </style>
+</head>
+
+<body class="admin-page">
+
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <span class="fa-solid fa-utensils"></span>
+            <h2>Admin</h2>
+        </div>
+
+        <div class="sidebar-menu">
+            <ul>
+                <li><a href="/admin/adminpanel.html"><span class="fa-solid fa-gauge-high"></span> <span>Panel</span></a>
+                </li>
+                <li><a href="/admin/admin-orders.html"><span class="fa-solid fa-bag-shopping"></span>
+                        <span>Siparişler</span></a></li>
+                <li><a href="/admin/admin-products.html"><span class="fa-solid fa-burger"></span>
+                        <span>Ürünler</span></a></li>
+                <li><a href="/admin/admin-reservations.html"><span class="fa-solid fa-calendar-days"></span>
+                        <span>Rezervasyonlar</span></a></li>
+                <li><a href="/admin/admin-customers.html" class="active"><span class="fa-solid fa-users"></span>
+                        <span>Müşteriler</span></a></li>
+                <li><a href="/admin/admin-messages.html"><span class="fa-solid fa-message"></span>
+                        <span>Mesajlar</span></a></li>
+                <li><a href="/admin/admin-logs.html"><span class="fa-solid fa-clipboard-list"></span> <span>İşlem
+                            Logları</span></a></li>
+                <li><a href="/admin/admin-settings.html"><span class="fa-solid fa-gear"></span> <span>Ayarlar</span></a>
+                </li>
+                <li><a href="/"><span class="fa-solid fa-house"></span> <span>Siteye Dön</span></a></li>
+            </ul>
+        </div>
+
+        <div class="logout-container">
+            <div class="logout-btn" onclick="window.location.href='/logout'">
+                <i class="fa-solid fa-power-off"></i>
+                <span>Çıkış Yap</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h2><i class="fa-solid fa-users"></i> Müşteri Listesi</h2>
+            <div class="search-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" id="customer-search" placeholder="İsim, E-posta veya Tel ara...">
+            </div>
+            <div class="user-wrapper">
+                <img src="" id="admin-avatar" alt="Profil" style="object-fit: cover;">
+                <div>
+                    <h4 id="admin-name">Yükleniyor...</h4>
+                    <small id="admin-role">...</small>
+                </div>
+            </div>
+        </header>
+
+        <div class="recent-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Kayıtlı Müşteriler</h3>
+                    <button onclick="fetchCustomers()"><i class="fa-solid fa-rotate"></i> Yenile</button>
+                </div>
+                <div class="card-body">
+                    <table width="100%" class="customer-table">
+                        <thead>
+                            <tr>
+                                <th>Ad Soyad</th>
+                                <th>İletişim</th>
+                                <th>Yetki Durumu</th>
+                                <th>Toplam Sipariş</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customers-table-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="stylish-modal" class="custom-modal-overlay">
+        <div class="custom-modal-box" id="modal-theme-box">
+
+            <div class="modal-icon-wrapper">
+                <i id="modal-icon" class="fa-solid fa-circle-question"></i>
+            </div>
+
+            <h3 id="modal-title" class="modal-title">Başlık</h3>
+            <p id="modal-msg" class="modal-desc">Mesaj</p>
+
+            <div class="modal-actions">
+                <button type="button" onclick="closeStylishModal()" class="modal-btn btn-cancel">Vazgeç</button>
+                <button type="button" id="modal-confirm-btn" class="modal-btn btn-confirm">Onayla</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allCustomers = [];
+
+        // DOM Elementlerini Tanımla
+        const modalOverlay = document.getElementById('stylish-modal');
+        const modalBox = document.getElementById('modal-theme-box');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMsg = document.getElementById('modal-msg');
+        const modalIcon = document.getElementById('modal-icon');
+        const confirmBtn = document.getElementById('modal-confirm-btn');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchCustomers();
+            updateAdminProfile();
+        });
+
+        // --- 1. MODAL FONKSİYONLARI ---
+        function openStylishModal(title, msg, type, onConfirm) {
+            // İçeriği Doldur
+            modalTitle.textContent = title;
+            modalMsg.textContent = msg;
+
+            // Önceki sınıfları temizle
+            modalBox.classList.remove('theme-success', 'theme-danger', 'theme-warning');
+            confirmBtn.classList.remove('green-btn');
+
+            // Tipe göre stil ver
+            if (type === 'success') {
+                modalBox.classList.add('theme-success');
+                modalIcon.className = 'fa-solid fa-user-shield';
+                confirmBtn.classList.add('green-btn'); // Butonu yeşil yap
+            } else if (type === 'danger') {
+                modalBox.classList.add('theme-danger');
+                modalIcon.className = 'fa-solid fa-trash-can';
+            } else {
+                modalBox.classList.add('theme-warning');
+                modalIcon.className = 'fa-solid fa-circle-exclamation';
+            }
+
+            // Buton Tıklama İşlemi
+            // Önce eski event listener'ı temizlemek için klonlama yapabiliriz veya basitçe onclick atarız
+            confirmBtn.onclick = function () {
+                closeStylishModal();
+                if (onConfirm) onConfirm();
+            };
+
+            // Göster
+            modalOverlay.classList.add('active');
+        }
+
+        function closeStylishModal() {
+            modalOverlay.classList.remove('active');
+        }
+
+        // --- 2. BUTON TETİKLEYİCİLERİ ---
+
+        // Yönetici Yap / Al Butonuna Basınca
+        function askToggleAdminRole(id, makeAdmin) {
+            if (makeAdmin) {
+                // YEŞİL MODAL (Yönetici Yapılıyor)
+                openStylishModal(
+                    "Yönetici Yetkisi Ver",
+                    "Bu kullanıcıyı YÖNETİCİ yapmak istiyor musunuz? (Admin paneline erişebilecek.)",
+                    "success",
+                    () => toggleAdminRole(id, true)
+                );
+            } else {
+                // KIRMIZI/UYARI MODAL (Yetki Alınıyor)
+                openStylishModal(
+                    "Yetkiyi Kaldır",
+                    "Bu kullanıcının yönetici yetkisini almak üzeresiniz. Devam edilsin mi?",
+                    "danger",
+                    () => toggleAdminRole(id, false)
+                );
+            }
+        }
+
+        // Sil Butonuna Basınca
+        function askDeleteCustomer(id) {
+            openStylishModal(
+                "Müşteriyi Sil",
+                "DİKKAT: Bu müşteriyi silerseniz geçmiş siparişlerinde veri kaybı olabilir!",
+                "danger",
+                () => deleteCustomer(id)
+            );
+        }
+
+        // --- 3. VERİTABANI İŞLEMLERİ ---
+        async function fetchCustomers() {
+            try {
+                const res = await fetch('/api/admin/customers');
+                const data = await res.json();
+                if (data.success) {
+                    allCustomers = data.customers;
+                    renderTable(allCustomers);
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function renderTable(customers) {
+            const tbody = document.getElementById('customers-table-body');
+            if (customers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Kayıtlı müşteri bulunamadı.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = '';
+            customers.forEach(user => {
+                let phoneHtml = user.phone ? `<span style="color: #fff; font-weight:500;">${user.phone}</span>` : '<span style="color: #666;">Yok</span>';
+
+                const isAdmin = (user.is_admin === true || user.is_admin === 1);
+                const adminBtnColor = isAdmin ? '#2ecc71' : '#7f8c8d';
+                const adminBtnIcon = isAdmin ? 'fa-user-shield' : 'fa-user';
+                const adminBtnText = isAdmin ? 'Yönetici' : 'Müşteri';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><div style="font-weight: bold; color: #fff; font-size:1.1rem;">${user.name} ${user.surname}</div></td>
+                        <td>
+                            <div style="font-size: 1.1rem; margin-bottom: 5px; color:#ddd;">${user.email}</div>
+                            <div style="font-size: 1.1rem;">${phoneHtml}</div>
+                        </td>
+                        <td>
+                            <span style="background:${isAdmin ? 'rgba(46, 204, 113, 0.2)' : 'rgba(255,255,255,0.05)'}; 
+                                         color:${isAdmin ? '#2ecc71' : '#aaa'}; 
+                                         padding:5px 10px; border-radius:5px; font-size:0.9rem;">
+                                ${adminBtnText}
+                            </span>
+                        </td>
+                        <td><span class="status ${user.order_count > 0 ? 'teslim' : 'iptal'}" style="font-size: 1rem;">${user.order_count} Sipariş</span></td>
+                        <td>
+                            <button onclick="askToggleAdminRole(${user.id}, ${!isAdmin})" class="action-btn" style="background: ${adminBtnColor}; color: white; margin-right:5px;">
+                                <i class="fa-solid ${adminBtnIcon}"></i>
+                            </button>
+                            <button onclick="askDeleteCustomer(${user.id})" class="action-btn" style="background: #e74c3c; color: white;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Arama
+        document.getElementById('customer-search').addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const filtered = allCustomers.filter(u => (u.name + ' ' + u.surname).toLowerCase().includes(val) || u.email.toLowerCase().includes(val) || (u.phone && u.phone.includes(val)));
+            renderTable(filtered);
+        });
+
+        // API Çağrıları
+        async function toggleAdminRole(id, makeAdmin) {
+            try {
+                const res = await fetch('/api/admin/toggle-admin-role', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, make_admin: makeAdmin }) });
+                if ((await res.json()).success) fetchCustomers(); else alert("Hata oluştu");
+            } catch (e) { alert("Sunucu hatası"); }
+        }
+
+        async function deleteCustomer(id) {
+            try {
+                const res = await fetch('/api/admin/delete-customer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+                if ((await res.json()).success) fetchCustomers(); else alert("Hata oluştu");
+            } catch (e) { alert("Sunucu hatası"); }
+        }
+
+        fetch('/api/admin/settings').then(r => r.json()).then(d => { if (d.success && d.settings?.site_favicon) { let l = document.querySelector("link[rel~='icon']"); if (!l) { l = document.createElement('link'); l.rel = 'icon'; document.head.appendChild(l); } l.href = d.settings.site_favicon; } });
+
+        async function updateAdminProfile() {
+            const imgEl = document.getElementById('admin-avatar'); const nameEl = document.getElementById('admin-name'); const roleEl = document.getElementById('admin-role');
+            if (!imgEl || !nameEl) return;
+            try {
+                const res = await fetch('/api/check-auth'); const data = await res.json();
+                if (data.success && data.user) {
+                    const u = data.user; const fullName = (u.name && u.surname) ? `${u.name} ${u.surname}` : u.username;
+                    nameEl.innerText = fullName; roleEl.innerText = u.email;
+                    imgEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=random&color=fff&bold=true&size=128`;
+                }
+            } catch (err) { }
+        }
+    </script>
+</body>
+
+</html>

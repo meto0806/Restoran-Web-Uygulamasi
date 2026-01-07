@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesajlar | Admin</title>
+    <link rel="stylesheet" href="/deneme/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="admin-page">
+
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <span class="fa-solid fa-utensils"></span>
+            <h2>Admin</h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li><a href="/admin/adminpanel.html"><span class="fa-solid fa-gauge-high"></span> <span>Panel</span></a>
+                </li>
+                <li><a href="/admin/admin-orders.html"><span class="fa-solid fa-bag-shopping"></span>
+                        <span>Siparişler</span></a></li>
+                <li><a href="/admin/admin-products.html"><span class="fa-solid fa-burger"></span>
+                        <span>Ürünler</span></a></li>
+                <li><a href="/admin/admin-reservations.html"><span class="fa-solid fa-calendar-days"></span>
+                        <span>Rezervasyonlar</span></a></li>
+                <li><a href="/admin/admin-customers.html"><span class="fa-solid fa-users"></span>
+                        <span>Müşteriler</span></a></li>
+                <li><a href="/admin/admin-messages.html" class="active"><span class="fa-solid fa-message"></span>
+                        <span>Mesajlar</span></a></li>
+                <li><a href="/admin/admin-logs.html"><span class="fa-solid fa-clipboard-list"></span> <span>İşlem
+                            Logları</span></a></li>
+                <li><a href="/admin/admin-settings.html"><span class="fa-solid fa-gear"></span> <span>Ayarlar</span></a>
+                </li>
+                <li><a href="/"><span class="fa-solid fa-house"></span> <span>Siteye Dön</span></a></li>
+            </ul>
+        </div>
+        <div class="logout-container">
+            <div class="logout-btn" onclick="window.location.href='/logout'"><i
+                    class="fa-solid fa-power-off"></i><span>Çıkış Yap</span></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h2><i class="fa-solid fa-envelope"></i> Gelen Mesajlar</h2>
+
+            <div class="user-wrapper">
+                <img src="/fotolar/default.png" id="admin-avatar" alt="Admin" style="object-fit: cover;">
+                <div>
+                    <h4 id="admin-name">Yükleniyor...</h4>
+                    <small id="admin-role">...</small>
+                </div>
+            </div>
+        </header>
+
+        <div class="recent-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3>İletişim Formu Mesajları</h3>
+                    <button onclick="loadMessages()"
+                        style="background:var(--primary); padding:8px 15px; border-radius:20px; border:none; cursor:pointer; font-weight:bold;">Yenile</button>
+                </div>
+                <div class="card-body">
+                    <table width="100%">
+                        <thead>
+                            <tr>
+                                <th>Gönderen</th>
+                                <th>İletişim Bilgileri</th>
+                                <th>Konu</th>
+                                <th>Mesaj</th>
+                                <th>Tarih</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="messages-table">
+                            <tr>
+                                <td colspan="6" style="text-align:center;">Yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMessages();
+            updateAdminProfile(); // İsim düzeltildi
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/api/admin/settings')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.settings && data.settings.site_favicon) {
+                        let link = document.querySelector("link[rel~='icon']");
+                        if (!link) {
+                            link = document.createElement('link');
+                            link.rel = 'icon';
+                            document.getElementsByTagName('head')[0].appendChild(link);
+                        }
+                        link.href = data.settings.site_favicon;
+                    }
+                })
+                .catch(err => console.error("Favicon yüklenemedi", err));
+        });
+
+        // PROFİL BİLGİLERİNİ GÜNCELLEYEN FONKSİYON
+        async function updateAdminProfile() {
+            try {
+                const res = await fetch('/api/check-auth');
+                const data = await res.json();
+                if (data.success && data.user) {
+                    document.getElementById('admin-name').innerText = data.user.name;
+                    document.getElementById('admin-role').innerText = data.user.email;
+                    // Avatarı isme göre oluştur (Diğer sayfalardaki gibi)
+                    document.getElementById('admin-avatar').src = `https://ui-avatars.com/api/?name=${data.user.name}&background=random&color=fff`;
+                }
+            } catch (e) { }
+        }
+
+        async function loadMessages() {
+            const tbody = document.getElementById('messages-table');
+            try {
+                const res = await fetch('/api/admin/messages');
+                const data = await res.json();
+
+                if (data.success && data.messages.length > 0) {
+                    tbody.innerHTML = '';
+                    data.messages.forEach(m => {
+                        const dateObj = new Date(m.created_at);
+                        const formattedDate = dateObj.toLocaleDateString('tr-TR') + ' ' + dateObj.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+
+                        tbody.innerHTML += `
+                            <tr style="border-bottom: 1px solid #333;">
+                                <td style="font-weight:bold; font-size:1.1rem;">${m.name}</td>
+                                <td>
+                                    <div style="font-size:1rem; margin-bottom:4px;">${m.email}</div>
+                                    <div style="font-size:1.5rem; font-weight:bold; margin-top:5px;">
+                                        ${m.phone ? m.phone : '<span style="font-size:0.9rem; font-weight:normal;">(Telefon Yok)</span>'}
+                                    </div>
+                                </td>
+                                <td style="font-weight:500;">${m.subject}</td>
+                                <td style="max-width:300px; color:#ddd; font-style:italic;">"${m.message}"</td>
+                                <td style="font-size:0.9rem; color:#aaa;">${formattedDate}</td>
+                                <td>
+                                    <button onclick="deleteMessage(${m.id})" title="Sil" style="background:#c0392b; color:white; border:none; width:35px; height:35px; border-radius:50%; cursor:pointer; transition:0.3s;">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; font-size:1.2rem;">Henüz mesaj yok.</td></tr>';
+                }
+            } catch (e) {
+                console.error(e);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Hata oluştu.</td></tr>';
+            }
+        }
+
+        async function deleteMessage(id) {
+            if (!confirm('Bu mesajı silmek istediğinize emin misiniz?')) return;
+            try {
+                const res = await fetch('/api/admin/delete-message', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    loadMessages();
+                } else {
+                    alert('Silinemedi.');
+                }
+            } catch (e) { console.error(e); }
+        }
+    </script>
+</body>
+
+</html>

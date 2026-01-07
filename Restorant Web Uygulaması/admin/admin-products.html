@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün Yönetimi | Admin</title>
+    <link rel="stylesheet" href="/deneme/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="admin-page">
+
+    <div id="toast-container"></div>
+
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <span class="fa-solid fa-utensils"></span>
+            <h2>Admin</h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li><a href="/admin/adminpanel.html"><span class="fa-solid fa-gauge-high"></span> <span>Panel</span></a>
+                </li>
+                <li><a href="/admin/admin-orders.html"><span class="fa-solid fa-bag-shopping"></span>
+                        <span>Siparişler</span></a></li>
+                <li><a href="/admin/admin-products.html" class="active"><span class="fa-solid fa-burger"></span>
+                        <span>Ürünler</span></a></li>
+                <li><a href="/admin/admin-reservations.html"><span class="fa-solid fa-calendar-days"></span>
+                        <span>Rezervasyonlar</span></a></li>
+                <li><a href="/admin/admin-customers.html"><span class="fa-solid fa-users"></span>
+                        <span>Müşteriler</span></a></li>
+                <li><a href="/admin/admin-messages.html"><span class="fa-solid fa-message"></span>
+                        <span>Mesajlar</span></a></li>
+                <li><a href="/admin/admin-logs.html"><span class="fa-solid fa-clipboard-list"></span> <span>İşlem
+                            Logları</span></a></li>
+                <li><a href="/admin/admin-settings.html"><span class="fa-solid fa-gear"></span> <span>Ayarlar</span></a>
+                </li>
+                <li><a href="/"><span class="fa-solid fa-house"></span> <span>Siteye Dön</span></a></li>
+            </ul>
+        </div>
+        <div class="logout-container">
+            <div class="logout-btn" onclick="window.location.href='/logout'"><i
+                    class="fa-solid fa-power-off"></i><span>Çıkış Yap</span></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h2><i class="fa-solid fa-burger"></i> Ürün Yönetimi</h2>
+            <div class="user-wrapper">
+                <img src="" id="admin-avatar" alt="Profil" style="object-fit: cover;">
+                <div>
+                    <h4 id="admin-name">Yükleniyor...</h4>
+                    <small id="admin-role">...</small>
+                </div>
+            </div>
+        </header>
+
+        <div
+            style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div class="filter-wrapper">
+                <div style="position: relative; flex: 1;">
+                    <input type="text" id="search-input" onkeyup="filterTable()" placeholder="Ürün ara..."
+                        style="width: 100%; padding: 12px 15px; padding-left: 40px; border-radius: 8px; border: 1px solid #ccc; font-size: 1.4rem;">
+                    <i class="fa-solid fa-magnifying-glass"
+                        style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #777;"></i>
+                </div>
+                <select id="filter-category-select" class="filter-select" onchange="filterTable()">
+                    <option value="all">Tüm Kategoriler</option>
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button onclick="openCategoryModal()" class="card-header button"
+                    style="padding: 12px 25px; font-size: 1.4rem; background: #e67e22;">Kategori Yönetimi</button>
+                <button onclick="modalAc('add')" class="card-header button"
+                    style="padding: 12px 25px; font-size: 1.4rem;"><i class="fa-solid fa-plus"></i> Yeni Ürün
+                    Ekle</button>
+            </div>
+        </div>
+
+        <div class="recent-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Mevcut Ürünler</h3>
+                </div>
+                <div class="card-body">
+                    <table width="100%">
+                        <thead>
+                            <tr>
+                                <th>Görsel</th>
+                                <th>Ürün Adı</th>
+                                <th>Kategori</th>
+                                <th>Vitrin</th>
+                                <th>Fiyat</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table">
+                            <tr>
+                                <td colspan="7" style="text-align: center;">Yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span onclick="modalKapat()" class="close-modal">&times;</span>
+            <h2 id="modal-title" style="margin-bottom: 25px; color: var(--text-main);">Yeni Ürün Ekle</h2>
+
+            <form id="product-form" enctype="multipart/form-data">
+                <input type="hidden" id="prod-id">
+                <input type="hidden" id="prod-existing-image">
+
+                <div class="form-group">
+                    <label>Ürün Adı</label>
+                    <input type="text" id="prod-name" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="product-category-select" name="category_id" class="form-control" required>
+                        <option value="">Yükleniyor...</option>
+                    </select>
+                </div>
+
+                <div class="form-group"
+                    style="background: rgba(230, 126, 34, 0.1); padding: 10px; border-radius: 8px; border: 1px solid #e67e22;">
+                    <label style="color: #d35400; font-weight: bold;">Ana Sayfa Vitrini</label>
+                    <select id="prod-home-section" class="form-control">
+                        <option value="none">Gösterme (Varsayılan)</option>
+                        <option value="menu">"Our Menu" Kısmında Göster</option>
+                        <option value="product">"Our Products" Kısmında Göster</option>
+                    </select>
+                    <small style="color: #666;">Ürünü ana sayfadaki özel alanlara sabitlemek için seçin.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Fiyat (TL)</label>
+                    <input type="number" step="0.01" id="prod-price" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Ürün Fotoğrafı</label>
+                    <input type="file" id="prod-image-file" class="form-control" accept="image/*"
+                        onchange="previewImage(event)">
+                    <div style="margin-top: 10px; text-align: center;">
+                        <img id="image-preview" src="" style="max-height: 100px; border-radius: 10px; display: none;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Açıklama</label>
+                    <textarea id="prod-desc" class="form-control"></textarea>
+                </div>
+
+                <button type="submit" class="modal-btn">Kaydet</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="category-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px; margin: 10% auto;">
+            <span onclick="closeCategoryModal()" class="close-modal">&times;</span>
+            <h2 style="margin-bottom: 20px;">Kategori Yönetimi</h2>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="hidden" id="edit-cat-id">
+                <div style="flex: 2;"><input type="text" id="new-cat-name" class="form-control" placeholder="Ad"></div>
+                <div style="flex: 1;"><input type="number" id="new-cat-sort" class="form-control" placeholder="Sıra"
+                        value="0"></div>
+                <button onclick="addCategory()" id="btn-add-cat" class="modal-btn" style="width: auto;"><i
+                        class="fa-solid fa-plus"></i></button>
+                <button onclick="updateCategory()" id="btn-update-cat" class="modal-btn"
+                    style="display: none; width: auto; background:#f39c12;"><i class="fa-solid fa-check"></i></button>
+                <button onclick="cancelEditMode()" id="btn-cancel-cat" class="modal-btn"
+                    style="display: none; width: auto; background:#7f8c8d;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="max-height: 350px; overflow-y: auto;">
+                <ul id="category-list-ul" style="list-style: none; padding: 0;"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="/deneme/script.js"></script>
+
+<script>
+        let allProducts = []; // Ürünleri hafızada tutmak için global liste
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategoriesForSelect();
+            loadProducts();
+        });
+
+        // TOAST BİLDİRİM
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            let icon = type === 'success' ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-circle-exclamation"></i>';
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.add('show'); }, 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => { toast.remove(); }, 400); }, 3000);
+        }
+
+        // --- KATEGORİ FONKSİYONLARI ---
+        async function loadCategoriesForSelect() {
+            try {
+                const res = await fetch('/api/categories');
+                const data = await res.json();
+                if (data.success) {
+                    const select = document.getElementById('product-category-select');
+                    const listUl = document.getElementById('category-list-ul');
+                    const filterSelect = document.getElementById('filter-category-select');
+
+                    if (select) {
+                        const currentVal = select.value;
+                        select.innerHTML = '<option value="">Seçiniz...</option>';
+                        data.categories.forEach(cat => { select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`; });
+                        if (currentVal) select.value = currentVal;
+                    }
+
+                    if (listUl) {
+                        listUl.innerHTML = '';
+                        data.categories.forEach(cat => {
+                            const safeName = cat.name.replace(/'/g, "\\'");
+                            listUl.innerHTML += `
+                                <li style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #444; background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:6px;">
+                                    <span style="font-size:1.1rem; color:#fff;">
+                                        <b style="color:var(--primary); margin-right:10px;">#${cat.sort_order}</b> ${cat.name}
+                                    </span> 
+                                    <div style="display:flex; gap:8px;">
+                                        <button onclick="startEditMode(${cat.id}, '${safeName}', ${cat.sort_order})" class="action-btn" style="background: #3498db; color: white; padding: 6px 10px; border-radius: 4px; cursor: pointer; border:none;" title="Düzenle">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button> 
+                                        <button onclick="deleteCategory(${cat.id})" class="action-btn" style="background: #e74c3c; color: white; padding: 6px 10px; border-radius: 4px; cursor: pointer; border:none;" title="Sil">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </li>`;
+                        });
+                    }
+
+                    if (filterSelect) {
+                        filterSelect.innerHTML = '<option value="all">Tüm Kategoriler</option>';
+                        data.categories.forEach(cat => { filterSelect.innerHTML += `<option value="${cat.name}">${cat.name}</option>`; });
+                    }
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function addCategory() {
+            const name = document.getElementById('new-cat-name').value;
+            const sort = document.getElementById('new-cat-sort').value;
+            if (!name) return showToast("Boş olamaz", "error");
+            const fd = new FormData(); fd.append('name', name); fd.append('sort_order', sort);
+            if ((await (await fetch('/api/categories', { method: 'POST', body: fd })).json()).success) {
+                document.getElementById('new-cat-name').value = ''; loadCategoriesForSelect(); showToast("Eklendi");
+            }
+        }
+        function startEditMode(id, name, sort) {
+            document.getElementById('edit-cat-id').value = id; document.getElementById('new-cat-name').value = name; document.getElementById('new-cat-sort').value = sort;
+            document.getElementById('btn-add-cat').style.display = 'none'; document.getElementById('btn-update-cat').style.display = 'inline-block'; document.getElementById('btn-cancel-cat').style.display = 'inline-block';
+        }
+        function cancelEditMode() {
+            document.getElementById('edit-cat-id').value = ''; document.getElementById('new-cat-name').value = ''; document.getElementById('new-cat-sort').value = '0';
+            document.getElementById('btn-add-cat').style.display = 'inline-block'; document.getElementById('btn-update-cat').style.display = 'none'; document.getElementById('btn-cancel-cat').style.display = 'none';
+        }
+        async function updateCategory() {
+            const id = document.getElementById('edit-cat-id').value;
+            const fd = new FormData(); fd.append('name', document.getElementById('new-cat-name').value); fd.append('sort_order', document.getElementById('new-cat-sort').value);
+            if ((await (await fetch('/api/categories/' + id, { method: 'PUT', body: fd })).json()).success) { cancelEditMode(); loadCategoriesForSelect(); showToast("Güncellendi"); }
+        }
+        async function deleteCategory(id) {
+            if (confirm('Silinsin mi?')) { if ((await (await fetch('/api/categories/' + id, { method: 'DELETE' })).json()).success) { loadCategoriesForSelect(); showToast("Silindi"); } else { showToast("Silinemez, ürün var!", "error"); } }
+        }
+        function openCategoryModal() { document.getElementById('category-modal').style.display = 'block'; cancelEditMode(); loadCategoriesForSelect(); }
+        function closeCategoryModal() { document.getElementById('category-modal').style.display = 'none'; }
+
+
+        // --- ÜRÜN FONKSİYONLARI ---
+        async function loadProducts() {
+            const res = await fetch('/api/admin/products');
+            const data = await res.json();
+            const tbody = document.getElementById('products-table');
+
+            if (data.products.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Hiç ürün yok.</td></tr>'; return; }
+            
+            // Ürünleri global listeye kaydet (DÜZELTME)
+            allProducts = data.products;
+            
+            tbody.innerHTML = '';
+
+            data.products.forEach(p => {
+                const catName = p.category_name || '-';
+                const isChecked = p.is_active ? 'checked' : '';
+
+                // Vitrin Etiketi
+                let homeBadge = '<span style="color:#aaa;">-</span>';
+                if (p.home_section === 'menu') homeBadge = '<span style="background:#e67e22; color:white; padding:2px 6px; border-radius:4px; font-size:1.1rem;">Menu</span>';
+                if (p.home_section === 'product') homeBadge = '<span style="background:#2980b9; color:white; padding:2px 6px; border-radius:4px; font-size:1.1rem;">Product</span>';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><img src="${p.image_url}" class="product-img" onerror="this.src='/fotolar/default.png'"></td>
+                        <td class="prod-name-cell">${p.name}</td>
+                        <td class="cat-cell">${catName}</td>
+                        <td>${homeBadge}</td>
+                        <td style="color: var(--primary); font-weight: bold;">${p.price} TL</td>
+                        <td><label class="switch"><input type="checkbox" onchange="toggleStatus(${p.id}, this)" ${isChecked}><span class="slider"></span></label></td>
+                        <td>
+                            <div style="display: flex; gap: 10px;">
+                                <button onclick="editProduct(${p.id})" class="action-btn" style="background: #3498db; color: white;"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="deleteProduct(${p.id})" class="action-btn" style="background: #e74c3c; color: white;"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        // FİLTRELEME
+        function filterTable() {
+            const input = document.getElementById('search-input');
+            const filterText = input.value.toLowerCase();
+            const select = document.getElementById('filter-category-select');
+            const filterCat = select.value.toLowerCase();
+            const table = document.getElementById('products-table');
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 0; i < tr.length; i++) {
+                const nameTd = tr[i].getElementsByClassName('prod-name-cell')[0];
+                const catTd = tr[i].getElementsByClassName('cat-cell')[0];
+                if (nameTd && catTd) {
+                    const nameVal = nameTd.textContent || nameTd.innerText;
+                    const catVal = catTd.textContent || catTd.innerText;
+                    const nameMatch = nameVal.toLowerCase().indexOf(filterText) > -1;
+                    const catMatch = (filterCat === 'all') || (catVal.toLowerCase() === filterCat);
+                    tr[i].style.display = (nameMatch && catMatch) ? "" : "none";
+                }
+            }
+        }
+
+        async function toggleStatus(id, checkbox) {
+            try { await fetch('/api/admin/toggle-product-status', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, is_active: checkbox.checked }) }); showToast("Durum güncellendi"); } catch (e) { checkbox.checked = !checkbox.checked; }
+        }
+
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function () { document.getElementById('image-preview').src = reader.result; document.getElementById('image-preview').style.display = 'block'; };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // MODAL VE FORM İŞLEMLERİ
+        const modal = document.getElementById('product-modal');
+        const form = document.getElementById('product-form');
+
+        function modalAc(mode) {
+            modal.style.display = 'flex';
+            if (mode === 'add') {
+                document.getElementById('modal-title').innerText = 'Yeni Ürün Ekle';
+                form.reset();
+                document.getElementById('prod-id').value = '';
+                document.getElementById('image-preview').style.display = 'none';
+                document.getElementById('prod-existing-image').value = '';
+                document.getElementById('prod-home-section').value = 'none'; 
+            }
+        }
+        function modalKapat() { modal.style.display = 'none'; }
+
+        // --- GÜNCELLENMİŞ EDİT FONKSİYONU ---
+        // Artık parametreleri HTML'den değil, listeden çekiyor.
+        function editProduct(id) {
+            // ID'ye göre ürünü bul
+            const p = allProducts.find(x => x.id === id);
+            
+            if (!p) return; // Ürün bulunamazsa dur
+
+            modalAc('edit');
+            document.getElementById('modal-title').innerText = 'Ürünü Düzenle';
+            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-name').value = p.name;
+            document.getElementById('prod-desc').value = p.description || '';
+            document.getElementById('prod-price').value = p.price;
+            
+            const catSelect = document.getElementById('product-category-select');
+            if (catSelect) catSelect.value = p.category_id;
+            
+            document.getElementById('prod-existing-image').value = p.image_url || '';
+            document.getElementById('image-preview').src = p.image_url || '/fotolar/default.png';
+            document.getElementById('image-preview').style.display = 'block';
+
+            // Vitrin Ayarını Doldur
+            document.getElementById('prod-home-section').value = (p.home_section && p.home_section !== 'undefined' && p.home_section !== 'null') ? p.home_section : 'none';
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('prod-id').value;
+            const formData = new FormData();
+            formData.append('name', document.getElementById('prod-name').value);
+            formData.append('description', document.getElementById('prod-desc').value);
+            formData.append('price', document.getElementById('prod-price').value);
+            formData.append('category_id', document.getElementById('product-category-select').value);
+            formData.append('existing_image', document.getElementById('prod-existing-image').value);
+            formData.append('home_section', document.getElementById('prod-home-section').value);
+
+            const fileInput = document.getElementById('prod-image-file');
+            if (fileInput.files[0]) formData.append('image', fileInput.files[0]);
+            if (id) formData.append('id', id);
+
+            const endpoint = id ? '/api/admin/update-product' : '/api/admin/add-product';
+            try {
+                const res = await fetch(endpoint, { method: 'POST', body: formData });
+                const result = await res.json();
+                if (result.success) { modalKapat(); loadProducts(); showToast(id ? "Ürün güncellendi!" : "Ürün eklendi!"); }
+                else { showToast(result.message, 'error'); }
+            } catch (err) { console.error(err); }
+        });
+
+        async function deleteProduct(id) {
+            if (confirm('Silinsin mi?')) {
+                if ((await (await fetch('/api/admin/delete-product', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) })).json()).success) { loadProducts(); showToast("Silindi."); }
+            }
+        }
+    </script>
+</body>
+
+</html>

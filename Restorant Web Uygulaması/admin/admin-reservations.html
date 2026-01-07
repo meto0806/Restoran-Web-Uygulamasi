@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezervasyonlar | Admin</title>
+    <link rel="stylesheet" href="/deneme/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="admin-page">
+
+    <div id="toast-container"></div>
+
+    <div id="custom-confirm-modal" class="confirm-modal-overlay">
+        <div class="confirm-box">
+            <i class="fa-solid fa-circle-question" style="font-size: 5rem; color: #e74c3c; margin-bottom: 20px;"></i>
+            <h3 id="confirm-title">Emin misiniz?</h3>
+            <p id="confirm-desc">Bu işlemi onaylıyor musunuz?</p>
+            <div class="confirm-actions">
+                <button id="btn-confirm-yes" class="c-btn c-btn-yes">Evet</button>
+                <button onclick="closeConfirmModal()" class="c-btn c-btn-no">Vazgeç</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <span class="fa-solid fa-utensils"></span>
+            <h2>Admin</h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li><a href="/admin/adminpanel.html"><span class="fa-solid fa-gauge-high"></span> <span>Panel</span></a>
+                </li>
+                <li><a href="/admin/admin-orders.html"><span class="fa-solid fa-bag-shopping"></span>
+                        <span>Siparişler</span></a></li>
+                <li><a href="/admin/admin-products.html"><span class="fa-solid fa-burger"></span>
+                        <span>Ürünler</span></a></li>
+                <li><a href="/admin/admin-reservations.html" class="active"><span
+                            class="fa-solid fa-calendar-days"></span> <span>Rezervasyonlar</span></a></li>
+                <li><a href="/admin/admin-customers.html"><span class="fa-solid fa-users"></span>
+                        <span>Müşteriler</span></a></li>
+                <li><a href="/admin/admin-messages.html"><span class="fa-solid fa-message"></span>
+                        <span>Mesajlar</span></a></li>
+                <li><a href="/admin/admin-logs.html"><span class="fa-solid fa-clipboard-list"></span> <span>İşlem
+                            Logları</span></a></li>
+                <li><a href="/admin/admin-settings.html"><span class="fa-solid fa-gear"></span> <span>Ayarlar</span></a>
+                </li>
+                <li><a href="/"><span class="fa-solid fa-house"></span> <span>Siteye Dön</span></a></li>
+            </ul>
+        </div>
+        <div class="logout-container">
+            <div class="logout-btn" onclick="window.location.href='/logout'"><i
+                    class="fa-solid fa-power-off"></i><span>Çıkış Yap</span></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h2><i class="fa-solid fa-calendar-check"></i> Rezervasyon Takibi</h2>
+            <div class="user-wrapper">
+                <img src="/fotolar/default.png" alt="Admin" style="object-fit: cover;">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <h4 id="admin-name" style="font-size: 1.5rem; margin: 0; font-weight: 700;">Yükleniyor...</h4>
+                    <small id="admin-email"
+                        style="font-size: 1.1rem; color: #aaa; text-transform: lowercase;">...</small>
+                </div>
+            </div>
+        </header>
+
+        <div class="reservation-tabs-container">
+            <button class="res-tab-btn active" onclick="switchTab('active', this)">
+                <i class="fa-solid fa-fire"></i> Aktif Rezervasyonlar
+            </button>
+            <button class="res-tab-btn" onclick="switchTab('past', this)">
+                <i class="fa-solid fa-clock-rotate-left"></i> Geçmiş Rezervasyonlar
+            </button>
+
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+                <span id="loading-indicator" style="color: #00e676; font-size: 1.2rem; display: none;">
+                    <i class="fa-solid fa-arrows-rotate fa-spin"></i> Güncelleniyor...
+                </span>
+                <button onclick="loadReservations(true)"
+                    style="background:#333; color:#fff; border:none; width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:1.2rem;">
+                    <i class="fa-solid fa-rotate"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="recent-grid">
+            <div class="card">
+                <div class="card-body">
+
+                    <div id="tab-active" class="tab-content active-content">
+                        <table width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Müşteri</th>
+                                    <th>Telefon</th>
+                                    <th>Tarih & Saat</th>
+                                    <th>Kişi</th>
+                                    <th>Notlar</th>
+                                    <th>Durum</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reservations-table-current">
+                                <tr>
+                                    <td colspan="7" style="text-align:center;">Yükleniyor...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="tab-past" class="tab-content">
+                        <table width="100%">
+                            <thead>
+                                <tr>
+                                    <th style="color:#777;">Müşteri</th>
+                                    <th style="color:#777;">Telefon</th>
+                                    <th style="color:#777;">Tarih & Saat</th>
+                                    <th style="color:#777;">Kişi</th>
+                                    <th style="color:#777;">Notlar</th>
+                                    <th style="color:#777;">Durum</th>
+                                    <th style="color:#777;">İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reservations-table-past">
+                                <tr>
+                                    <td colspan="7" style="text-align:center;">Geçmiş rezervasyon yok.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pendingAction = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadReservations();
+            checkAdminDetails();
+
+            // 30 Saniyede bir otomatik yenileme
+            setInterval(() => {
+                loadReservations(true);
+            }, 30000);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/api/admin/settings')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.settings && data.settings.site_favicon) {
+                        let link = document.querySelector("link[rel~='icon']");
+                        if (!link) {
+                            link = document.createElement('link');
+                            link.rel = 'icon';
+                            document.getElementsByTagName('head')[0].appendChild(link);
+                        }
+                        link.href = data.settings.site_favicon;
+                    }
+                })
+                .catch(err => console.error("Favicon yüklenemedi", err));
+        });
+
+        // SEKME DEĞİŞTİRME FONKSİYONU
+        function switchTab(tabName, btnElement) {
+            // 1. Tüm içerikleri gizle
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active-content'));
+            // 2. Seçilen içeriği göster
+            document.getElementById('tab-' + tabName).classList.add('active-content');
+
+            // 3. Buton stillerini güncelle
+            document.querySelectorAll('.res-tab-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+        }
+
+        async function checkAdminDetails() {
+            try {
+                const res = await fetch('/api/check-auth');
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('admin-name').innerText = `${data.user.name} ${data.user.surname}`;
+                    document.getElementById('admin-email').innerText = data.user.email;
+                }
+            } catch (e) { }
+        }
+
+        async function loadReservations(showLoading = false) {
+            if (showLoading) document.getElementById('loading-indicator').style.display = 'inline-block';
+
+            const tbodyCurrent = document.getElementById('reservations-table-current');
+            const tbodyPast = document.getElementById('reservations-table-past');
+
+            try {
+                const res = await fetch('/api/admin/reservations');
+                const data = await res.json();
+
+                if (data.success && data.reservations.length > 0) {
+                    tbodyCurrent.innerHTML = '';
+                    tbodyPast.innerHTML = '';
+
+                    let hasCurrent = false;
+                    let hasPast = false;
+
+                    data.reservations.forEach(r => {
+                        const dateObj = new Date(r.reservation_date);
+                        const todayStart = new Date();
+                        todayStart.setHours(0, 0, 0, 0);
+
+                        const formattedDate = dateObj.toLocaleDateString('tr-TR');
+                        const note = r.notes ? `<span style="font-size:1.1rem; color:#ccc; font-style:italic;">${r.notes}</span>` : '-';
+
+                        let statusColor = '#f39c12';
+                        if (r.status === 'Onaylandı') statusColor = '#27ae60';
+                        if (r.status === 'İptal Edildi') statusColor = '#c0392b';
+
+                        const rowHTML = `
+                            <tr style="border-bottom: 1px solid #333;">
+                                <td style="font-weight:bold; font-size:1.4rem;">${r.name}</td>
+                                <td>${r.phone}</td>
+                                <td>
+                                    <div style="font-weight:bold; font-size:1.4rem;">${formattedDate}</div>
+                                    <div style="font-size:1.2rem; color:#aaa;">${r.reservation_time}</div>
+                                </td>
+                                <td><span style="background:#333; padding:4px 10px; border-radius:6px; font-weight:bold;">${r.guests} Kişi</span></td>
+                                <td style="max-width:200px;">${note}</td>
+                                <td>
+                                    <span style="background:${statusColor}20; color:${statusColor}; padding:6px 12px; border-radius:15px; font-size:1.2rem; font-weight:bold;">
+                                        ${r.status}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div style="display:flex; gap:8px;">
+                                        <button onclick="askConfirmation('status', ${r.id}, 'Onaylandı')" title="Onayla" style="background:#27ae60; color:white; border:none; width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:1.4rem;"><i class="fa-solid fa-check"></i></button>
+                                        <button onclick="askConfirmation('status', ${r.id}, 'İptal Edildi')" title="İptal Et" style="background:#e67e22; color:white; border:none; width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:1.4rem;"><i class="fa-solid fa-ban"></i></button>
+                                        <button onclick="askConfirmation('delete', ${r.id})" title="Sil" style="background:#c0392b; color:white; border:none; width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:1.4rem;"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+
+                        if (dateObj < todayStart) {
+                            tbodyPast.innerHTML += rowHTML;
+                            hasPast = true;
+                        } else {
+                            tbodyCurrent.innerHTML += rowHTML;
+                            hasCurrent = true;
+                        }
+                    });
+
+                    if (!hasCurrent) tbodyCurrent.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; font-size:1.5rem;">Aktif rezervasyon yok.</td></tr>';
+                    if (!hasPast) tbodyPast.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; font-size:1.5rem;">Geçmiş rezervasyon bulunmuyor.</td></tr>';
+
+                } else {
+                    tbodyCurrent.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; font-size:1.5rem;">Henüz hiç rezervasyon yok.</td></tr>';
+                    tbodyPast.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; font-size:1.5rem;">Geçmiş rezervasyon bulunmuyor.</td></tr>';
+                }
+            } catch (e) {
+                console.error(e);
+            } finally {
+                if (showLoading) setTimeout(() => { document.getElementById('loading-indicator').style.display = 'none'; }, 500);
+            }
+        }
+
+        // --- MODAL FONKSİYONLARI ---
+        const confirmModal = document.getElementById('custom-confirm-modal');
+        const confirmTitle = document.getElementById('confirm-title');
+        const confirmDesc = document.getElementById('confirm-desc');
+        const confirmYesBtn = document.getElementById('btn-confirm-yes');
+
+        function askConfirmation(type, id, status = null) {
+            confirmModal.style.display = 'flex';
+            setTimeout(() => confirmModal.classList.add('active'), 10);
+            pendingAction = { type, id, status };
+
+            if (type === 'delete') {
+                confirmTitle.innerText = "Kayıt Silinecek!";
+                confirmDesc.innerText = "Bu rezervasyon kaydını kalıcı olarak silmek istediğinize emin misiniz?";
+                confirmYesBtn.innerText = "Evet, Sil";
+                confirmYesBtn.style.backgroundColor = "#c0392b";
+            } else if (type === 'status') {
+                confirmTitle.innerText = "Durum Değişikliği";
+                confirmDesc.innerText = `Rezervasyon durumunu "${status}" olarak güncellemek istiyor musunuz?`;
+                confirmYesBtn.innerText = "Evet, Güncelle";
+                confirmYesBtn.style.backgroundColor = status === 'Onaylandı' ? '#27ae60' : '#e67e22';
+            }
+            confirmYesBtn.onclick = executeAction;
+        }
+
+        function closeConfirmModal() {
+            confirmModal.classList.remove('active');
+            setTimeout(() => confirmModal.style.display = 'none', 300);
+            pendingAction = null;
+        }
+
+        async function executeAction() {
+            if (!pendingAction) return;
+            const originalText = confirmYesBtn.innerText;
+            confirmYesBtn.innerText = "İşleniyor...";
+
+            try {
+                let url = '';
+                let body = {};
+
+                if (pendingAction.type === 'delete') {
+                    url = '/api/admin/delete-reservation';
+                    body = { id: pendingAction.id };
+                } else if (pendingAction.type === 'status') {
+                    url = '/api/admin/update-reservation-status';
+                    body = { id: pendingAction.id, status: pendingAction.status };
+                }
+
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await res.json();
+                closeConfirmModal();
+
+                if (data.success) {
+                    showToast('İşlem başarıyla tamamlandı.', 'success');
+                    loadReservations();
+                } else {
+                    showToast('Bir hata oluştu.', 'error');
+                }
+            } catch (e) {
+                closeConfirmModal();
+                showToast('Sunucu hatası.', 'error');
+            } finally {
+                confirmYesBtn.innerText = originalText;
+            }
+        }
+
+        function showToast(msg, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const d = document.createElement('div');
+            d.className = `toast ${type}`;
+            d.style.cssText = `background:${type === 'success' ? '#27ae60' : '#c0392b'}; color:white; padding:15px; margin-bottom:10px; border-radius:5px; animation: fadeIn 0.5s; box-shadow:0 5px 15px rgba(0,0,0,0.3); display:flex; align-items:center; gap:10px; font-size:1.4rem;`;
+            d.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> ${msg}`;
+            container.appendChild(d);
+            setTimeout(() => d.remove(), 3000);
+        }
+    </script>
+</body>
+
+</html>

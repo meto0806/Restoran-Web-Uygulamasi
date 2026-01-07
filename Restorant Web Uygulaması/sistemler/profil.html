@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilim - Restorant</title>
+    <link rel="stylesheet" href="/deneme/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="profile-page">
+    
+    <header class="header">
+         <a href="/" class="logo"><img src="/fotolar/logo.png" alt="logo"></a>
+<nav class="navbar">
+          <span id="welcome-message-container"></span>
+
+          <a href="/">Ana Sayfa</a>
+          
+          <a href="/#about">Hakkımızda</a>
+
+          <a href="/sistemler/menu.html" class="active">Menü</a>
+
+          <a href="/#review">Yorumlar</a>
+
+          <a href="/#contact">İletişim</a>
+
+          <a href="#" onclick="rezervasyonModalAc(); return false;">Rezervasyon</a>
+       </nav>
+       <div class="buttons">
+           
+           <button id="cart-btn" style="position: relative;">
+                <i class="fa-solid fa-shopping-cart"></i>
+                <span id="cart-count" style="position: absolute; top: -8px; right: -8px; background-color: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 1rem; font-weight: bold;">0</span>
+           </button>
+           <a href="/giris-kayit/index.html" id="user-auth-link"><i class="fa-solid fa-user"></i></a>
+           
+       </div>
+    </header>
+
+    <div id="custom-notification" class="custom-notification">İşlem Başarılı!</div>
+
+    <main class="profile-main">
+        <div class="profile-container">
+            
+            <aside class="profile-sidebar">
+                <div class="user-info-card">
+                    <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
+                    <h3 id="sidebar-name">Yükleniyor...</h3>
+                    <p id="sidebar-email">...</p>
+                </div>
+                
+                <nav class="profile-menu">
+                    <button class="p-menu-btn active" onclick="openTab(event, 'bilgilerim')"><i class="fa-solid fa-id-card"></i> Bilgilerim</button>
+                    <button class="p-menu-btn" onclick="openTab(event, 'siparislerim')"><i class="fa-solid fa-box-open"></i> Siparişlerim</button>
+                    <button class="p-menu-btn" onclick="openTab(event, 'rezervasyonlarim')"><i class="fa-solid fa-calendar-check"></i> Rezervasyonlarım</button>
+                    
+                    <button class="p-menu-btn" onclick="openTab(event, 'adreslerim')"><i class="fa-solid fa-map-location-dot"></i> Adreslerim</button>
+                    <button class="p-menu-btn" onclick="openTab(event, 'guvenlik')"><i class="fa-solid fa-lock"></i> Güvenlik</button>
+                    <a href="/logout" class="p-menu-btn logout-btn" style="text-decoration: none; justify-content: flex-start;"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</a>
+                </nav>
+            </aside>
+
+            <section class="profile-content">
+                
+                <div id="bilgilerim" class="tab-panel" style="display: block;">
+                    <h2 class="panel-title">Hesap Bilgileri</h2>
+                    <form class="profile-form" id="info-form">
+                        <div class="form-row">
+                            <div class="input-group"><label>Ad</label><input type="text" id="profile-name" readonly></div>
+                            <div class="input-group"><label>Soyad</label><input type="text" id="profile-surname" readonly></div>
+                        </div>
+                        <div class="input-group"><label>E-Posta</label><input type="email" id="profile-email" readonly></div>
+                        <div class="input-group"><label>Telefon</label><input type="tel" id="profile-phone" readonly></div>
+                        <div class="form-actions" style="margin-top: 20px;">
+                            <button type="button" id="btn-edit-profile" class="save-btn" style="background-color: #34495e;" onclick="profilDuzenleAc()"><i class="fa-solid fa-pen-to-square"></i> Bilgileri Düzenle</button>
+                            <div id="edit-buttons" style="display: none; gap: 10px;">
+                                <button type="submit" class="save-btn">Değişiklikleri Kaydet</button>
+                                <button type="button" class="save-btn" style="background-color: #e74c3c;" onclick="profilDuzenleKapat()">İptal</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="siparislerim" class="tab-panel" style="display: none;">
+                    <h2 class="panel-title">Geçmiş Siparişler</h2>
+                    <div id="siparis-listesi-container"><p>Yükleniyor...</p></div>
+                </div>
+
+                <div id="rezervasyonlarim" class="tab-panel" style="display: none;">
+                    <h2 class="panel-title">Rezervasyon Geçmişim</h2>
+                    <div id="rezervasyon-listesi-container">
+                        <p style="color:#aaa;">Yükleniyor...</p>
+                    </div>
+                </div>
+
+                <div id="adreslerim" class="tab-panel" style="display: none;">
+                    <h2 class="panel-title">Kayıtlı Adresler</h2>
+                    <div id="adres-listesi"><p>Yükleniyor...</p></div>
+                    <button class="add-new-address" onclick="adresModalAc()">+ Yeni Adres Ekle</button>
+                </div>
+
+                <div id="guvenlik" class="tab-panel" style="display: none;">
+                    <h2 class="panel-title">Güvenlik Ayarları</h2>
+                    <form class="profile-form" id="password-form">
+                        <div class="input-group"><label>Mevcut Şifre</label><input type="password" id="current-password" required></div>
+                        <div class="form-row">
+                            <div class="input-group"><label>Yeni Şifre</label><input type="password" id="new-password" required></div>
+                            <div class="input-group"><label>Yeni Şifre (Tekrar)</label><input type="password" id="confirm-password" required></div>
+                        </div>
+                        <button type="submit" class="save-btn">Şifreyi Güncelle</button>
+                    </form>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <div id="sepet-modal-overlay" class="sepet-modal-overlay">
+        <div id="sepet-modal" class="sepet-modal">
+            <button id="sepet-kapat-btn" class="sepet-kapat-btn">&times;</button>
+            <h2>Sepetim</h2>
+            <div id="sepet-urunler-listesi"><p>Boş</p></div>
+            <div class="sepet-toplam">Toplam: <span id="sepet-toplam-fiyat">0.00 TL</span></div>
+            <a href="#" class="btn" style="width:100%; text-align:center;">Siparişi Tamamla</a>
+        </div>
+    </div>
+
+    <div id="custom-alert-overlay" class="sepet-modal-overlay">
+        <div class="custom-alert-box">
+            <div id="alert-icon-container"></div>
+            <h3 id="alert-title">Başlık</h3>
+            <p id="alert-message">Mesaj buraya gelecek.</p>
+            <div id="alert-buttons" class="alert-actions">
+                </div>
+        </div>
+    </div>
+    
+    <div id="adres-modal-overlay" class="sepet-modal-overlay">
+        <div class="sepet-modal" style="max-width: 500px;"> 
+            <button class="sepet-kapat-btn" onclick="adresModalKapat()">&times;</button>
+            <h2 id="adres-modal-baslik">Yeni Adres Ekle</h2>
+            <form class="profile-form" id="address-form">
+                <input type="hidden" id="addr-id">
+                <div class="input-group"><label>Başlık</label><input type="text" id="addr-title" required></div>
+                <div class="form-row">
+                    <div class="input-group"><label>İl</label><input type="text" id="addr-city" required></div>
+                    <div class="input-group"><label>İlçe</label><input type="text" id="addr-district" required></div>
+                </div>
+                <div class="input-group"><label>Adres</label><input type="text" id="addr-text" required></div>
+                <button type="submit" class="save-btn" style="width:100%; margin-top:0;">Kaydet</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="siparis-detay-modal-overlay" class="sepet-modal-overlay">
+        <div class="sepet-modal"><button class="sepet-kapat-btn" onclick="siparisDetayKapat()">&times;</button><h2>Sipariş Detayı</h2><div id="siparis-detay-icerik">...</div></div>
+    </div>
+    
+    <div id="delete-modal-overlay" class="sepet-modal-overlay">
+        <div class="sepet-modal" style="max-width:400px; text-align:center; padding:40px;"><h3 style="color:#333;">Emin misiniz?</h3><button onclick="adresSilIptal()" class="btn" style="background:#95a5a6;">İptal</button><button onclick="adresSilOnayla()" class="btn" style="background:#e74c3c;">Sil</button></div>
+    </div>
+
+    <div id="rezervasyon-modal-overlay" class="sepet-modal-overlay">
+        <div class="sepet-modal" style="max-width: 500px;">
+            <button class="sepet-kapat-btn" onclick="rezervasyonModalKapat()">×</button>
+            <h2 style="color: #e74c3c;">Masa Rezervasyonu</h2>
+            <p style="text-align:center; color:#666; margin-bottom:20px;">Lezzet dolu bir deneyim için yerinizi ayırtın.</p>
+            
+            <form id="reservation-form" onsubmit="rezervasyonYap(event)">
+                <div class="inputBox" style="margin-bottom:15px; border:1px solid #ddd; padding:10px; border-radius:10px; display:flex; align-items:center;">
+                    <i class="fa-solid fa-user" style="color:#e74c3c; margin-right:10px; font-size:1.6rem;"></i>
+                    <input type="text" id="rez-name" placeholder="Adınız Soyadınız" required style="border:none; width:100%; font-size:1.5rem; outline:none;">
+                </div>
+
+                <div class="inputBox" style="margin-bottom:15px; border:1px solid #ddd; padding:10px; border-radius:10px; display:flex; align-items:center;">
+                    <i class="fa-solid fa-phone" style="color:#e74c3c; margin-right:10px; font-size:1.6rem;"></i>
+                    <input type="tel" id="rez-phone" placeholder="Telefon Numaranız" required style="border:none; width:100%; font-size:1.5rem; outline:none;">
+                </div>
+
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <div class="inputBox" style="flex:1; border:1px solid #ddd; padding:10px; border-radius:10px;">
+                        <label style="font-size:1.2rem; color:#888;">Tarih</label>
+                        <input type="date" id="rez-date" required style="border:none; width:100%; font-size:1.4rem; outline:none;">
+                    </div>
+                    <div class="inputBox" style="flex:1; border:1px solid #ddd; padding:10px; border-radius:10px;">
+                        <label style="font-size:1.2rem; color:#888;">Saat</label>
+                        <input type="time" id="rez-time" required style="border:none; width:100%; font-size:1.4rem; outline:none;">
+                    </div>
+                </div>
+
+                <div class="inputBox" style="margin-bottom:15px; border:1px solid #ddd; padding:10px; border-radius:10px; display:flex; align-items:center;">
+                    <i class="fa-solid fa-users" style="color:#e74c3c; margin-right:10px; font-size:1.6rem;"></i>
+                    <select id="rez-guests" style="border:none; width:100%; font-size:1.5rem; outline:none; background:transparent;">
+                        <option value="1">1 Kişi</option>
+                        <option value="2" selected>2 Kişi</option>
+                        <option value="3">3 Kişi</option>
+                        <option value="4">4 Kişi</option>
+                        <option value="5">5 Kişi</option>
+                        <option value="6">6 Kişi</option>
+                        <option value="kalabalik">7+ (Kalabalık Grup)</option>
+                    </select>
+                </div>
+
+                <div class="inputBox" style="margin-bottom:20px; border:1px solid #ddd; padding:10px; border-radius:10px;">
+                    <textarea id="rez-notes" rows="2" placeholder="Özel bir isteğiniz var mı? (Opsiyonel)" style="border:none; width:100%; font-size:1.4rem; outline:none; resize:none; font-family:'Poppins', sans-serif;"></textarea>
+                </div>
+
+                <button type="submit" class="btn" style="width:100%; background-color:#e74c3c; border:none;">Rezervasyonu Tamamla</button>
+            </form>
+        </div>
+    </div>
+
+<script>
+        let sepet = JSON.parse(localStorage.getItem('sepet')) || []; 
+        let silinecekAdresId = null;
+
+        // --- ÖZEL MODAL ELEMENTLERİ ---
+        const alertOverlay = document.getElementById('custom-alert-overlay');
+        const alertIcon = document.getElementById('alert-icon-container');
+        const alertTitle = document.getElementById('alert-title');
+        const alertMsg = document.getElementById('alert-message');
+        const alertBtns = document.getElementById('alert-buttons');
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            
+            // 1. KULLANICI BİLGİLERİ VE YÖNLENDİRME
+            const authLink = document.getElementById('user-auth-link');
+            const welcomeContainer = document.getElementById('welcome-message-container');
+            
+            fetch('/api/check-auth').then(res=>res.json()).then(data => {
+                if (data.success) {
+                    authLink.href = '/profil.html';
+                    if (welcomeContainer) welcomeContainer.innerHTML = `Hoş geldin, ${data.user.username}`;
+                    
+                    // Formları Doldur
+                    if(document.getElementById('profile-name')) document.getElementById('profile-name').value = data.user.name || '';
+                    if(document.getElementById('profile-surname')) document.getElementById('profile-surname').value = data.user.surname || '';
+                    if(document.getElementById('profile-email')) document.getElementById('profile-email').value = data.user.email || '';
+                    if(document.getElementById('profile-phone')) document.getElementById('profile-phone').value = data.user.phone || '';
+                    
+                    // Sidebar Bilgileri
+                    if(document.getElementById('sidebar-name')) document.getElementById('sidebar-name').textContent = `${data.user.name||''} ${data.user.surname||''}`;
+                    if(document.getElementById('sidebar-email')) document.getElementById('sidebar-email').textContent = data.user.email||'';
+                    
+                    // Verileri Yükle
+                    adresleriYukle();
+                    siparisleriYukle();
+                    rezervasyonlariYukle(); 
+                } else { 
+                    window.location.href = '/giris-kayit/index.html'; 
+                }
+            });
+
+            // 2. PROFİL DÜZENLEME FORMU
+            const infoForm = document.getElementById('info-form');
+            if(infoForm) infoForm.addEventListener('submit', async (e) => { 
+                e.preventDefault();
+                const name = document.getElementById('profile-name').value;
+                const surname = document.getElementById('profile-surname').value;
+                const email = document.getElementById('profile-email').value;
+                const phone = document.getElementById('profile-phone').value;
+                
+                try {
+                    const res = await fetch('/api/update-profile', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,surname,email,phone}) });
+                    const r = await res.json();
+                    if(r.success) { 
+                        showCustomAlert('Başarılı', 'Profil bilgileriniz güncellendi.', 'success'); 
+                        setTimeout(()=>location.reload(), 1500); 
+                    } else { 
+                        showCustomAlert('Hata', 'Güncelleme sırasında bir hata oluştu.', 'error'); 
+                    }
+                } catch(e) { showCustomAlert('Hata', 'Sunucu hatası.', 'error'); }
+            });
+
+            // 3. ŞİFRE DEĞİŞTİRME FORMU
+            const pwdForm = document.getElementById('password-form');
+            if(pwdForm) pwdForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                
+                if(newPassword !== confirmPassword) { 
+                    showCustomAlert('Hata', 'Yeni şifreler birbiriyle uyuşmuyor.', 'error'); 
+                    return; 
+                }
+                
+                try {
+                    const res = await fetch('/api/change-password', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({currentPassword, newPassword}) });
+                    const r = await res.json();
+                    if(r.success) { 
+                        showCustomAlert('Başarılı', 'Şifreniz başarıyla değiştirildi.', 'success'); 
+                        pwdForm.reset(); 
+                    } else { 
+                        showCustomAlert('Hata', r.message || 'Şifre değiştirilemedi.', 'error'); 
+                    }
+                } catch(e) { showCustomAlert('Hata', 'Sunucu hatası.', 'error'); }
+            });
+
+            // 4. ADRES FORMU
+            const addrForm = document.getElementById('address-form');
+            if (addrForm) {
+                addrForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const id = document.getElementById('addr-id').value;
+                    const title = document.getElementById('addr-title').value;
+                    const city = document.getElementById('addr-city').value;
+                    const district = document.getElementById('addr-district').value;
+                    const address_text = document.getElementById('addr-text').value;
+
+                    const endpoint = id ? '/api/update-address' : '/api/add-address';
+                    const bodyData = { title, city, district, address_text };
+                    if (id) bodyData.id = id;
+
+                    try {
+                        const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bodyData) });
+                        const result = await response.json();
+                        if (result.success) { 
+                            showNotification(id ? 'Adres güncellendi' : 'Adres eklendi', 'success'); 
+                            adresModalKapat(); 
+                            adresleriYukle(); 
+                        } else { 
+                            showCustomAlert('Hata', 'Adres kaydedilemedi.', 'error'); 
+                        }
+                    } catch (error) { showCustomAlert('Hata', 'Sunucu hatası.', 'error'); }
+                });
+            }
+            
+            sepetArayuzunuGuncelle();
+            setupCartModal();
+        });
+
+        // --- MODAL YÖNETİMİ (YENİ) ---
+        function closeAlert() {
+            if(alertOverlay) alertOverlay.classList.remove('goster');
+        }
+
+        function showCustomAlert(title, message, type = 'success') {
+            if(!alertOverlay) return alert(message); // Fallback
+            alertTitle.innerText = title;
+            alertMsg.innerText = message;
+            
+            // Tek buton: Tamam
+            alertBtns.innerHTML = `<button class="alert-btn btn-success" onclick="closeAlert()">Tamam</button>`;
+            
+            // İkon Ayarı
+            if(type === 'success') alertIcon.innerHTML = '<i class="fa-solid fa-circle-check alert-icon icon-success"></i>';
+            else if(type === 'error') alertIcon.innerHTML = '<i class="fa-solid fa-circle-xmark alert-icon icon-error"></i>';
+            else alertIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation alert-icon icon-warning"></i>';
+
+            alertOverlay.classList.add('goster');
+        }
+
+        function showCustomConfirm(title, message, onConfirm) {
+            if(!alertOverlay) { if(confirm(message)) onConfirm(); return; } // Fallback
+            alertTitle.innerText = title;
+            alertMsg.innerText = message;
+            alertIcon.innerHTML = '<i class="fa-solid fa-circle-question alert-icon icon-warning"></i>';
+            
+            alertBtns.innerHTML = '';
+            
+            // İki Buton: Vazgeç ve Evet
+            const btnCancel = document.createElement('button');
+            btnCancel.className = 'alert-btn btn-cancel';
+            btnCancel.innerText = 'Vazgeç';
+            btnCancel.onclick = closeAlert;
+            
+            const btnOk = document.createElement('button');
+            btnOk.className = 'alert-btn btn-confirm';
+            btnOk.innerText = 'Evet, İptal Et';
+            btnOk.onclick = () => {
+                closeAlert();
+                if(onConfirm) onConfirm();
+            };
+
+            alertBtns.appendChild(btnCancel);
+            alertBtns.appendChild(btnOk);
+            alertOverlay.classList.add('goster');
+        }
+
+        // --- YARDIMCI FONKSİYONLAR ---
+        function showNotification(msg, type) {
+            const n = document.getElementById('custom-notification');
+            n.innerText = msg;
+            n.className = `custom-notification ${type} show`;
+            setTimeout(() => n.classList.remove('show'), 3000);
+        }
+
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-panel");
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+            tablinks = document.getElementsByClassName("p-menu-btn");
+            for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // --- REZERVASYON İŞLEMLERİ ---
+        function rezervasyonlariYukle() {
+            const listDiv = document.getElementById('rezervasyon-listesi-container');
+            fetch('/api/my-reservations').then(res => res.json()).then(data => {
+                if(data.success && data.reservations && data.reservations.length > 0) {
+                    let html = `<table class="siparis-tablo" style="width:100%; border-collapse:collapse; margin-top:10px;">
+                        <thead style="background:#333; color:#fff;">
+                            <tr>
+                                <th style="padding:12px;">Tarih</th>
+                                <th>Saat</th>
+                                <th>Kişi</th>
+                                <th>Not</th>
+                                <th>Durum</th>
+                                <th>İşlem</th> 
+                            </tr>
+                        </thead><tbody>`;
+                    
+                    data.reservations.forEach(r => {
+                        const tarih = new Date(r.reservation_date).toLocaleDateString('tr-TR');
+                        let statusStyle = 'color:#f39c12; font-weight:bold;'; 
+                        let actionBtn = '';
+
+                        // Durum Renkleri
+                        if(r.status === 'Onaylandı') statusStyle = 'color:#27ae60; font-weight:bold;';
+                        if(r.status === 'İptal Edildi') statusStyle = 'color:#c0392b; font-weight:bold; text-decoration:line-through;';
+
+                        // İptal Butonu Mantığı
+                        if(r.status !== 'İptal Edildi' && r.status !== 'Tamamlandı') {
+                            actionBtn = `<button onclick="rezervasyonIptal(${r.id})" style="background-color:#c0392b; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:0.9rem;">
+                                <i class="fa-solid fa-ban"></i> İptal Et
+                            </button>`;
+                        } else {
+                            actionBtn = '<span style="color:#aaa; font-size:0.9rem;">-</span>';
+                        }
+
+                        html += `<tr style="border-bottom:1px solid #ddd;">
+                            <td style="padding:12px;">${tarih}</td>
+                            <td>${r.reservation_time}</td>
+                            <td>${r.guests} Kişi</td>
+                            <td style="color:#777; font-style:italic;">${r.notes || '-'}</td>
+                            <td style="${statusStyle}">${r.status}</td>
+                            <td style="text-align:center;">${actionBtn}</td>
+                        </tr>`;
+                    });
+                    html += `</tbody></table>`;
+                    listDiv.innerHTML = html;
+                } else { 
+                    listDiv.innerHTML = '<p>Henüz rezervasyonunuz yok.</p>'; 
+                }
+            }).catch(e => listDiv.innerHTML = '<p>Hata oluştu.</p>');
+        }
+
+        function rezervasyonIptal(id) {
+            showCustomConfirm("Rezervasyon İptali", "Bu rezervasyonu iptal etmek istediğinize emin misiniz? Bu işlem geri alınamaz.", () => {
+                fetch('/api/cancel-reservation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        showCustomAlert('Başarılı', 'Rezervasyon iptal edildi.', 'success');
+                        rezervasyonlariYukle(); // Tabloyu yenile
+                    } else {
+                        showCustomAlert('Hata', data.message || 'Hata oluştu.', 'error');
+                    }
+                })
+                .catch(err => showCustomAlert('Hata', 'Sunucu hatası.', 'error'));
+            });
+        }
+
+        // --- SİPARİŞ İŞLEMLERİ ---
+        function siparisleriYukle() {
+            const listDiv = document.getElementById('siparis-listesi-container');
+            fetch('/api/my-orders').then(res => res.json()).then(data => {
+                if (data.success) {
+                    if (data.orders.length === 0) { listDiv.innerHTML = '<p>Henüz siparişiniz yok.</p>'; } 
+                    else {
+                        let html = `<table class="siparis-tablo"><thead><tr><th>Sipariş No</th><th>Tarih</th><th>Tutar</th><th>Ödeme</th><th>Durum</th><th>Detay</th></tr></thead><tbody>`;
+                        data.orders.forEach(order => {
+                            const tarih = new Date(order.created_at).toLocaleDateString('tr-TR');
+                            html += `<tr><td>#${order.id}</td><td>${tarih}</td><td>${order.total_amount} TL</td><td>${order.payment_method}</td><td class="durum-bekliyor">${order.status}</td><td><button class="detail-btn" style="background:#333; color:#fff; border:none; padding:8px 12px; border-radius:5px; cursor:pointer;" onclick="siparisDetayGoster(${order.id})"><i class="fa-solid fa-eye"></i></button></td></tr>`;
+                        });
+                        html += `</tbody></table>`;
+                        listDiv.innerHTML = html;
+                    }
+                }
+            }).catch(err => console.error(err));
+        }
+
+        function siparisDetayGoster(orderId) {
+            const modal = document.getElementById('siparis-detay-modal-overlay');
+            const icerik = document.getElementById('siparis-detay-icerik');
+            icerik.innerHTML = '<p>Yükleniyor...</p>';
+            modal.classList.add('goster');
+            fetch('/api/get-order-details', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ orderId }) })
+            .then(res => res.json()).then(data => {
+                if (data.success) {
+                    let html = '<ul style="list-style:none; padding:0;">';
+                    data.items.forEach(item => { html += `<li style="border-bottom:1px solid #eee; padding:10px 0; display:flex; justify-content:space-between;"><span><strong>${item.quantity}x</strong> ${item.product_name}</span><span>${item.price} TL</span></li>`; });
+                    html += '</ul>';
+                    icerik.innerHTML = html;
+                } else { icerik.innerHTML = '<p>Detaylar alınamadı.</p>'; }
+            });
+        }
+        function siparisDetayKapat() { document.getElementById('siparis-detay-modal-overlay').classList.remove('goster'); }
+
+        // --- ADRES İŞLEMLERİ ---
+        function adresleriYukle() {
+            const listDiv = document.getElementById('adres-listesi');
+            fetch('/api/get-addresses').then(res => res.json()).then(data => {
+                if (data.success) {
+                    if (data.addresses.length === 0) { listDiv.innerHTML = '<p>Henüz kayıtlı adresiniz yok.</p>'; } 
+                    else {
+                        listDiv.innerHTML = '';
+                        data.addresses.forEach(addr => {
+                            listDiv.innerHTML += `
+                                <div class="address-box">
+                                    <h4>${addr.title}</h4>
+                                    <p>${addr.address_text} <br> <strong>${addr.district} / ${addr.city}</strong></p>
+                                    <div class="address-actions">
+                                        <button class="edit-addr" onclick="adresDuzenle('${addr.id}', '${addr.title}', '${addr.city}', '${addr.district}', '${addr.address_text}')"><i class="fa-solid fa-pen-to-square"></i> Düzenle</button>
+                                        <button class="del-addr" onclick="adresSil(${addr.id})"><i class="fa-solid fa-trash"></i> Sil</button>
+                                    </div>
+                                </div>`;
+                        });
+                    }
+                }
+            });
+        }
+        function adresDuzenle(id, title, city, district, text) {
+            document.getElementById('addr-id').value = id;
+            document.getElementById('addr-title').value = title;
+            document.getElementById('addr-city').value = city;
+            document.getElementById('addr-district').value = district;
+            document.getElementById('addr-text').value = text;
+            document.getElementById('adres-modal-baslik').textContent = 'Adresi Düzenle';
+            document.getElementById('adres-modal-overlay').classList.add('goster');
+        }
+        function adresSil(id) { silinecekAdresId = id; document.getElementById('delete-modal-overlay').classList.add('goster'); }
+        function adresSilIptal() { silinecekAdresId = null; document.getElementById('delete-modal-overlay').classList.remove('goster'); }
+        function adresSilOnayla() {
+            if (!silinecekAdresId) return;
+            fetch('/api/delete-address', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: silinecekAdresId }) })
+            .then(res => res.json()).then(data => {
+                if(data.success) { showNotification('Adres silindi.', 'success'); adresleriYukle(); } 
+                else { showNotification('Silinemedi.', 'error'); }
+                adresSilIptal();
+            });
+        }
+        function adresModalAc() { document.getElementById('address-form').reset(); document.getElementById('addr-id').value = ''; document.getElementById('adres-modal-baslik').textContent = 'Yeni Adres Ekle'; document.getElementById('adres-modal-overlay').classList.add('goster'); }
+        function adresModalKapat() { document.getElementById('adres-modal-overlay').classList.remove('goster'); }
+
+        // --- PROFİL ---
+        function profilDuzenleAc(){ document.getElementById('btn-edit-profile').style.display='none'; document.getElementById('edit-buttons').style.display='flex'; ['profile-name','profile-surname','profile-email','profile-phone'].forEach(id=>document.getElementById(id).removeAttribute('readonly')); }
+        function profilDuzenleKapat(){ location.reload(); }
+
+        // --- SEPET ---
+        function setupCartModal() {
+            const modalOverlay = document.getElementById('sepet-modal-overlay');
+            const modalCloseBtn = document.getElementById('sepet-kapat-btn');
+            const headerCartBtn = document.getElementById('cart-btn');
+            if(headerCartBtn) headerCartBtn.addEventListener('click', ()=>modalOverlay.classList.add('goster'));
+            if(modalCloseBtn) modalCloseBtn.addEventListener('click', ()=>modalOverlay.classList.remove('goster'));
+            if(modalOverlay) modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) modalOverlay.classList.remove('goster'); });
+        }
+        function sepetArayuzunuGuncelle() {
+            let toplamUrun = 0; let toplamFiyat = 0;
+            const sepetUrunListesi = document.getElementById('sepet-urunler-listesi');
+            const sepetToplamFiyat = document.getElementById('sepet-toplam-fiyat');
+            const cartCountElement = document.getElementById('cart-count');
+            if (sepetUrunListesi) sepetUrunListesi.innerHTML = '';
+            if (sepet.length === 0) { if(sepetUrunListesi) sepetUrunListesi.innerHTML = '<p>Sepetiniz şu an boş.</p>'; } 
+            else {
+                sepet.forEach(urun => {
+                    toplamUrun += urun.adet;
+                    toplamFiyat += urun.fiyat * urun.adet;
+                    if (sepetUrunListesi) {
+                        const urunElementi = document.createElement('div');
+                        urunElementi.className = 'sepet-urun-item';
+                        urunElementi.innerHTML = `
+                            <span class="urun-adi">${urun.ad}</span>
+                            <div class="adet-kontrol">
+                                <button class="adet-btn" onclick="adetDegistir('${urun.ad}', -1)">-</button>
+                                <span class="urun-adet">x ${urun.adet}</span>
+                                <button class="adet-btn" onclick="adetDegistir('${urun.ad}', 1)">+</button>
+                            </div>
+                            <span class="urun-fiyat">${(urun.fiyat * urun.adet).toFixed(2)} TL</span>
+                            <button class="kaldir-btn" onclick="sepettenKompleCikar('${urun.ad}')">&times;</button>
+                        `;
+                        sepetUrunListesi.appendChild(urunElementi);
+                    }
+                });
+            }
+            if (cartCountElement) cartCountElement.textContent = toplamUrun;
+            if (sepetToplamFiyat) sepetToplamFiyat.textContent = `${toplamFiyat.toFixed(2)} TL`;
+            localStorage.setItem('sepet', JSON.stringify(sepet));
+        }
+        function adetDegistir(ad, degisim) {
+            const mevcutUrun = sepet.find(urun => urun.ad === ad);
+            if (mevcutUrun) mevcutUrun.adet += degisim;
+            const guncelUrun = sepet.find(urun => urun.ad === ad);
+            if (guncelUrun && guncelUrun.adet <= 0) sepettenKompleCikar(ad);
+            else sepetArayuzunuGuncelle();
+        }
+        function sepettenKompleCikar(ad) {
+            sepet = sepet.filter(urun => urun.ad !== ad);
+            sepetArayuzunuGuncelle();
+        }
+
+        // --- EKLENEN KISIM: Rezervasyon Fonksiyonları ---
+        function rezervasyonModalAc() {
+            document.getElementById('rezervasyon-modal-overlay').classList.add('goster');
+            
+            // Tarih ayarı
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('rez-date');
+            if(dateInput) {
+                dateInput.min = today;
+                dateInput.value = today;
+            }
+
+            // Profil sayfasında olduğumuz için bilgileri mevcut inputlardan alıp dolduralım
+            const pName = document.getElementById('profile-name').value;
+            const pSurname = document.getElementById('profile-surname').value;
+            const pPhone = document.getElementById('profile-phone').value;
+
+            if(document.getElementById('rez-name')) document.getElementById('rez-name').value = (pName + ' ' + pSurname).trim();
+            if(document.getElementById('rez-phone')) document.getElementById('rez-phone').value = pPhone;
+        }
+
+        function rezervasyonModalKapat() {
+            document.getElementById('rezervasyon-modal-overlay').classList.remove('goster');
+        }
+
+        async function rezervasyonYap(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = 'Gönderiliyor...';
+            btn.disabled = true;
+
+            const data = {
+                name: document.getElementById('rez-name').value,
+                phone: document.getElementById('rez-phone').value,
+                date: document.getElementById('rez-date').value,
+                time: document.getElementById('rez-time').value,
+                guests: document.getElementById('rez-guests').value,
+                notes: document.getElementById('rez-notes').value
+            };
+
+            try {
+                const res = await fetch('/api/make-reservation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    rezervasyonModalKapat();
+                    showCustomAlert("Harika!", "Rezervasyonunuz başarıyla alındı. Profilinizden takip edebilirsiniz.", "success");
+                    document.getElementById('reservation-form').reset();
+                    // Rezervasyon listesini yenile
+                    if(typeof rezervasyonlariYukle === 'function') rezervasyonlariYukle();
+                } else {
+                    showCustomAlert("Hata", "Bir sorun oluştu.", "error");
+                }
+            } catch (err) {
+                showCustomAlert("Hata", "Sunucu hatası.", "error");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
